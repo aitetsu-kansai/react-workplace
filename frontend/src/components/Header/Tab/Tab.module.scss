@@ -1,0 +1,32 @@
+@use '../../../variables.scss' as vars;
+.tab-container {
+	border: 2px, vars.$accent-color solid;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 3px 10px;
+	border-radius: 12px;
+	gap: vars.$standart-text-size;
+	font-size: vars.$standart-text-size;
+	color: vars.$accent-color;
+	transition: 0.3s all ease-out;
+
+	svg {
+		font-size: vars.$small-text-size;
+		transition: 0.3s all ease-out;
+		padding: 2px;
+		border-radius: 50%;
+	}
+	svg:hover {
+		cursor: pointer;
+		background-color: vars.$main-color;
+		color: vars.$accent-color;
+	}
+}
+
+.tab-container:hover {
+	cursor: pointer;
+	background-color: vars.$secondary-accent-color;
+	color: vars.$main-color;
+	border-color: vars.$secondary-accent-color;
+}
