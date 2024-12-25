@@ -6,6 +6,7 @@ function Tabs() {
 		<div className={style['tabs-container']}>
 			<Tab noteName={'Note 1'} />
 			<Tab noteName={'Note 2'} />
+			<Tab noteName={'Note 3'} />
 		</div>
 	)
 }

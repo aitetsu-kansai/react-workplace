@@ -1,8 +1,12 @@
 @use '../../variables' as vars;
 
 .header {
+	display: grid;
+	grid-template-columns: 0.12fr 1fr;
 	background-color: vars.$main-color;
-	padding: 15px;
+	padding-block: 15px;
 	text-align: center;
-	border-bottom: 2px vars.$accent-color solid;
+	border-bottom: 1.5px vars.$accent-color solid;
+	justify-content: center;
+	align-items: center;
 }
