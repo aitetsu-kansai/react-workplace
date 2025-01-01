@@ -2,7 +2,7 @@
 
 .header {
 	display: grid;
-	grid-template-columns: 0.12fr 1fr;
+	grid-template-columns: vars.$grid-column-template;
 	background-color: vars.$main-color;
 	padding-block: 15px;
 	text-align: center;

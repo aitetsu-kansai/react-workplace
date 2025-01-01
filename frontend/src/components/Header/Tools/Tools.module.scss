@@ -3,7 +3,8 @@
 .tools-container {
 	display: flex;
 	justify-content: center;
-	gap: 10px;
+	// padding-left: 10px;
+	gap: 7px;
 
 	svg {
 		font-size: vars.$large-text-size;
