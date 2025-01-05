@@ -1,10 +1,9 @@
 @use '../../../variables.scss' as vars;
 
-.tools-container {
+.tools__container {
 	display: flex;
 	justify-content: center;
-	// padding-left: 10px;
-	gap: 7px;
+	gap: 5px;
 
 	svg {
 		font-size: vars.$large-text-size;
@@ -17,5 +16,17 @@
 		cursor: pointer;
 		background-color: vars.$accent-color;
 		fill: vars.$main-color;
+	}
+}
+
+.tools__burger-menu {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+}
+
+@media (max-width: 1100px) {
+	.tools__container {
+		gap: 0px;
 	}
 }

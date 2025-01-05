@@ -1,0 +1,44 @@
+@use '../../../variables.scss' as vars;
+
+.dropdown__container {
+	transition: 0.2s all ease-in;
+}
+
+.dropdown__list {
+	display: flex;
+	flex-direction: column;
+	position: absolute;
+	justify-content: center;
+	list-style: none;
+	background-color: vars.$secondary-main-color;
+	padding: 10px;
+	border-radius: 15px;
+	font-weight: 600;
+	margin: 0px;
+	z-index: 3;
+	font-size: 14px;
+	gap: 5px;
+	transition: 0.2s all ease-out;
+	max-height: 0;
+	opacity: 0;
+	top: 100%;
+	left: 0;
+
+	&--open {
+		opacity: 1;
+		max-height: 300px;
+	}
+}
+
+.more-info__ico {
+	font-size: 24px;
+	margin-left: auto;
+	transition: 0.2s all ease-in;
+	color: vars.$accent-color;
+	position: relative;
+}
+
+.more-info__ico:hover {
+	color: vars.$secondary-main-color;
+	cursor: pointer;
+}

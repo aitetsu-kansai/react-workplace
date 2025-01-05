@@ -61,9 +61,9 @@ p:hover {
 
 .folder-arrow {
 	font-size: vars.$standart-text-size;
-	transition: 0.2s all ease-in;
+	transition: 0.22s all ease-in;
 	&--open {
-		transition: 0.2s all ease-in;
+		transition: 0.22s all ease-in;
 		transform: rotate(90deg);
 	}
 }
@@ -71,14 +71,12 @@ p:hover {
 .folder-content {
 	max-height: 0;
 	overflow: hidden;
-	transition: 0.2s all ease-in-out;
-	opacity: 0;
+	transition: 0.22s all ease-in-out;
 	display: flex;
 	flex-direction: column;
 	gap: 5px;
 	&--open {
 		padding-top: 10px;
-		max-height: 300px; // Установи максимальное значение больше предполагаемого контента
-		opacity: 1;
+		max-height: 300px; // max-height for container
 	}
 }

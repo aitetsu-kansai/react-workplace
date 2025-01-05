@@ -26,7 +26,6 @@ function NotesFolder({ children }) {
 			>
 				{children}
 			</div>
-			{/* {folderIsOpen && children} */}
 		</div>
 	)
 }

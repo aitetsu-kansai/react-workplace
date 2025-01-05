@@ -1,0 +1,52 @@
+.modal {
+	background-color: rgba(0, 0, 0, 0.5);
+	width: 100%;
+	z-index: 2;
+	height: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	opacity: 0;
+	pointer-events: none;
+	transition: 0.4s;
+	&.active {
+		opacity: 0.9;
+		pointer-events: all;
+	}
+}
+
+.modal__content {
+	background-color: var(--background-secondary-color);
+	min-width: 35%;
+	max-width: 50%;
+	color: white;
+	text-align: end;
+	border-radius: 22px;
+	transform: scale(0.6);
+	transition: 0.2s;
+	overflow-y: scroll;
+	max-height: 90%;
+	text-align: center;
+
+	h2 {
+		text-align: center;
+	}
+
+	&.active {
+		transform: scale(1);
+	}
+}
+
+.modal__content::-webkit-scrollbar {
+	display: none;
+}
+
+@media (max-width: 1350px) {
+	.modal__content {
+		min-width: 65%;
+		max-width: 90%;
+	}
+}

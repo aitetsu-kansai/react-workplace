@@ -3,7 +3,7 @@
 .header {
 	display: grid;
 	grid-template-columns: vars.$grid-column-template;
-	background-color: vars.$main-color;
+	// background-color: vars.$main-color;
 	padding-block: 15px;
 	text-align: center;
 	border-bottom: 1.5px vars.$accent-color solid;

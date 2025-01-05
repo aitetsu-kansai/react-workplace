@@ -8,7 +8,7 @@ function Sidebar() {
 	const [sibebarIsVisible, setSidebarIsVisible] = useState(true)
 	const sidebarRef = useRef(null)
 	const [isResizing, setIsResizing] = useState(false)
-	const [sidebarWidth, setSidebarWidth] = useState(220)
+	const [sidebarWidth, setSidebarWidth] = useState('auto')
 
 	const startResizing = useCallback(() => {
 		setIsResizing(true)
@@ -31,9 +31,12 @@ function Sidebar() {
 	)
 
 	useEffect(() => {
+		console.log('MOUNT')
 		document.addEventListener('mousemove', resize)
 		document.addEventListener('mouseup', stopResizing)
 		return () => {
+			console.log('Component did unmount')
+
 			document.removeEventListener('mousemove', resize)
 			document.removeEventListener('mouseup', stopResizing)
 		}
