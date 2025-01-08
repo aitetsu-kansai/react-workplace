@@ -1,16 +1,16 @@
 import React from 'react'
-import './Modal.scss'
+import style from './Modal.module.scss'
 
 const Modal = React.memo(({ active, setActive, children, isImage = false }) => {
 	return (
 		<div
-			className={`modal ${active ? 'active' : ''}`}
+			className={`${style.modal} ${active ? style.active : ''}`}
 			onClick={() => {
 				setActive(false)
 			}}
 		>
 			<div
-				className={`modal__content ${active ? 'active' : ''}`}
+				className={`${style['modal__content']} ${active ? style.active : ''}`}
 				onClick={e => {
 					e.stopPropagation()
 				}}

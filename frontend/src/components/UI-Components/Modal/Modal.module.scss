@@ -1,3 +1,4 @@
+@use '../../../variables.scss' as vars;
 .modal {
 	background-color: rgba(0, 0, 0, 0.5);
 	width: 100%;
@@ -10,38 +11,39 @@
 	justify-content: center;
 	align-items: center;
 	opacity: 0;
+	visibility: hidden;
 	pointer-events: none;
-	transition: 0.4s;
+	transition: 0.3s all ease-in;
 	&.active {
-		opacity: 0.9;
+		visibility: visible;
+		opacity: 1;
 		pointer-events: all;
 	}
 }
 
 .modal__content {
-	background-color: var(--background-secondary-color);
-	min-width: 35%;
-	max-width: 50%;
-	color: white;
-	text-align: end;
-	border-radius: 22px;
 	transform: scale(0.6);
-	transition: 0.2s;
+	transition: 0.2s all ease-in-out;
 	overflow-y: scroll;
 	max-height: 90%;
 	text-align: center;
+	align-items: center;
+	align-content: center;
+	// z-index: 999;
+	opacity: 0;
+
+	&.active {
+		opacity: 1;
+		transform: scale(1);
+	}
 
 	h2 {
 		text-align: center;
 	}
 
-	&.active {
-		transform: scale(1);
+	&::-webkit-scrollbar {
+		display: none;
 	}
-}
-
-.modal__content::-webkit-scrollbar {
-	display: none;
 }
 
 @media (max-width: 1350px) {

@@ -1,6 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const initialState = []
+const initialState = {
+	notes: [],
+}
 
 const notesSlice = createSlice({
 	name: 'notes',
@@ -33,5 +35,6 @@ const notesSlice = createSlice({
 })
 
 export const { addGroup, addNote, addTask } = notesSlice.actions
+export const selectNotes = state => state.notes
 
 export default notesSlice.reducer

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { HiOutlineDotsVertical } from 'react-icons/hi'
+import { GiHamburgerMenu } from 'react-icons/gi'
 import './Dropdown.scss'
 
 function Dropdown({ children }) {
@@ -28,10 +28,7 @@ function Dropdown({ children }) {
 
 	return (
 		<div className='dropdown__container' ref={dropdownRef}>
-			<HiOutlineDotsVertical
-				onClick={openDropdown}
-				className='more-info__ico'
-			/>
+			<GiHamburgerMenu onClick={openDropdown} className='more-info__ico' />
 			<ul
 				className={`dropdown__list ${
 					dropdownIsOpen && 'dropdown__list--open'

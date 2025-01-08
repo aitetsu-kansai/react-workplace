@@ -11,6 +11,11 @@
 	color: vars.$accent-color;
 	transition: 0.3s all ease-out;
 
+	&.active {
+		background-color: vars.$accent-color;
+		color: vars.$secondary-main-color;
+	}
+
 	svg {
 		font-size: vars.$small-text-size;
 		transition: 0.3s all ease-out;
