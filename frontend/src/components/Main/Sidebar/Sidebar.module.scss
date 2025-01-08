@@ -1,0 +1,42 @@
+@use '../../../variables.scss' as vars;
+
+.wrapper {
+	background-color: vars.$main-color;
+	position: relative;
+	max-width: 0;
+	opacity: 0;
+	overflow: hidden;
+	transform: translateX(-100%);
+	transition: 0.15s opacity ease-out, 0.25s max-width ease-out,
+		transform 0.25s ease-out;
+
+	&.show {
+		min-width: 200px;
+		max-width: 600px;
+		opacity: 1;
+		transform: translateX(0);
+	}
+	&.alert {
+		opacity: 0.4;
+	}
+}
+
+.sidebar-container {
+	min-width: 100%;
+}
+
+.resizer {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 2px;
+	height: 100%;
+	background-color: vars.$accent-color;
+	transition: 0.1s all ease-in-out;
+	&:hover {
+		cursor: col-resize;
+		background-color: vars.$secondary-accent-color;
+		border-radius: 5px;
+		padding: 2px;
+	}
+}

@@ -1,0 +1,54 @@
+@use '../../../variables.scss' as vars;
+.modal {
+	background-color: rgba(0, 0, 0, 0.5);
+	width: 100%;
+	z-index: 2;
+	height: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	transition: 0.3s all ease-in;
+	&.active {
+		visibility: visible;
+		opacity: 1;
+		pointer-events: all;
+	}
+}
+
+.modal__content {
+	transform: scale(0.6);
+	transition: 0.2s all ease-in-out;
+	overflow-y: scroll;
+	max-height: 90%;
+	text-align: center;
+	align-items: center;
+	align-content: center;
+	// z-index: 999;
+	opacity: 0;
+
+	&.active {
+		opacity: 1;
+		transform: scale(1);
+	}
+
+	h2 {
+		text-align: center;
+	}
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
+}
+
+@media (max-width: 1350px) {
+	.modal__content {
+		min-width: 65%;
+		max-width: 90%;
+	}
+}
