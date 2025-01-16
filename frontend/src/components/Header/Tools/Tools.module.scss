@@ -4,13 +4,15 @@
 	display: flex;
 	justify-content: center;
 	gap: 5px;
-
+	// padding: 10px;
+	align-items: center;
+	
 	svg {
 		font-size: vars.$large-text-size;
 		transition: 0.3s all ease-out;
 		fill: vars.$accent-color;
-		padding: 3px;
 		border-radius: 5px;
+		padding: 3px;
 	}
 	svg:hover {
 		cursor: pointer;

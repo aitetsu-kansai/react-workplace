@@ -14,10 +14,7 @@ function InputLabel({
 	return (
 		<div className={styles['input-container']}>
 			<div className={styles['input__label-container']}>
-				<label htmlFor={id}>
-					{' '}
-					{title}:{` `}
-				</label>
+				<label htmlFor={id}>{title && `${title}:`}</label>
 			</div>
 			<div className={styles['input__field']}>
 				<input

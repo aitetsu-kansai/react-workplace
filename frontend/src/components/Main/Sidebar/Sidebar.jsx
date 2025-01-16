@@ -1,21 +1,30 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { RxCross1 } from 'react-icons/rx'
 import NotesFolder from './NotesFolder/NotesFolder'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { selectNotes } from '../../../redux/slices/notesSlice'
+import { selectSidebarTabFilter } from '../../../redux/slices/filterSlice'
+import { removeNote } from '../../../redux/slices/notesSlice'
 import {
 	selectSidebebarVisibleState,
+	selectTabs,
 	setTabIsActive,
 	toggleSidebar,
 	toggleTab,
 } from '../../../redux/slices/uiSlice'
-import './NotesFolder/NotesFolder.scss'
+import Filter from '../Filter/Filter'
 import style from './Sidebar.module.scss'
 
 function Sidebar() {
 	const dispatch = useDispatch()
-	const notes = useSelector(selectNotes)
+	const tabs = useSelector(selectTabs)
 	const sidebarVisibleState = useSelector(selectSidebebarVisibleState)
+	const sidebarTabFilter = useSelector(selectSidebarTabFilter)
+
+	const filteredSidebarNotes = tabs.filter(tab => {
+		const matchesName = tab.name.includes(sidebarTabFilter.toLowerCase())
+		return matchesName
+	})
 
 	// const [sibebarIsVisible, setSidebarIsVisible] = useState(true)
 	const sidebarRef = useRef(null)
@@ -51,7 +60,7 @@ function Sidebar() {
 
 	useEffect(() => {
 		console.log('use effect')
-		console.log(notes)
+		console.log(tabs)
 		let timeout
 		if (sidebarWidth < 200) {
 			dispatch(toggleSidebar())
@@ -78,6 +87,7 @@ function Sidebar() {
 			style={{ width: sidebarWidth }}
 			ref={sidebarRef}
 		>
+			<Filter />
 			<div
 				className={`${style['sidebar-container']} ${
 					sidebarVisibleState ? style['show'] : ''
@@ -85,31 +95,59 @@ function Sidebar() {
 				onMouseDown={e => e.preventDefault()}
 			>
 				<NotesFolder>
-					{notes.notes.length > 0 ? (
-						notes.notes.map(el => (
-							<p
-								key={el.id}
+					{tabs.length > 0 ? (
+						filteredSidebarNotes.map(el => (
+							<div
+								className={`${style['sidebar-container__element']} ${
+									el.isActive ? style['active'] : ''
+								}`}
 								onMouseUp={e => {
 									if (e.button === 0) {
 										dispatch(toggleTab({ id: el.id, type: 'open' }))
 										dispatch(setTabIsActive(el.id))
 									}
 									if (e.button === 1) {
-										console.log(1)
-
 										dispatch(toggleTab({ id: el.id, type: 'open' }))
 									}
 								}}
 							>
-								{el.name}
-							</p>
+								<p key={el.id}>{el.name}</p>
+								<RxCross1
+									onMouseUp={e => {
+										e.stopPropagation()
+										dispatch(removeNote(el.id))
+									}}
+								/>
+							</div>
 						))
 					) : (
 						<h4>{`You don't have any notes`}</h4>
 					)}
-					{/* <p className='active'>Note 1</p>
-					<p>Note 2</p>
-					<p>Note 3</p> */}
+					{tabs.length > 0 && filteredSidebarNotes.length === 0 && (
+						<h4>{'The note was not found on request'}</h4>
+					)}
+					{sidebarTabFilter !== '' &&
+						tabs
+							.filter(el => el.name === sidebarTabFilter)
+							.map(el => {
+								;<p
+									key={el.id}
+									className={el.isActive ? 'active' : ''}
+									onMouseUp={e => {
+										if (e.button === 0) {
+											dispatch(toggleTab({ id: el.id, type: 'open' }))
+											dispatch(setTabIsActive(el.id))
+										}
+										if (e.button === 1) {
+											console.log(1)
+
+											dispatch(toggleTab({ id: el.id, type: 'open' }))
+										}
+									}}
+								>
+									{el.name}
+								</p>
+							})}
 				</NotesFolder>
 				<div
 					className={style['resizer']}

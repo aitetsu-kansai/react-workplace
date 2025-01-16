@@ -1,15 +1,24 @@
 @use '../../../variables.scss' as vars;
+
 .tab-container {
 	border: 2px, vars.$accent-color solid;
 	display: flex;
-	justify-content: space-between;
+	// justify-content: space-between;
 	align-items: center;
-	padding: 3px 10px;
+	padding-inline: 10px;
 	border-radius: 12px;
 	gap: vars.$standart-text-size;
 	font-size: vars.$standart-text-size;
 	color: vars.$accent-color;
 	transition: 0.3s all ease-out;
+
+	p {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		max-width: 130px;
+		margin: 0;
+		pointer-events: none;
+	}
 
 	&.active {
 		background-color: vars.$accent-color;

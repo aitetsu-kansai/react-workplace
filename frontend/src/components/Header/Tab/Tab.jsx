@@ -13,7 +13,7 @@ function Tab({
 			}`}
 			onClick={onTabClick}
 		>
-			{noteName}
+			<p>{noteName}</p>
 			<RxCross1 onClick={onCrossClick} />
 		</div>
 	)
