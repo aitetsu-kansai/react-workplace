@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { v4 as uuidv4 } from 'uuid'
 import { setInfo } from '../../../redux/slices/infoSlice.js'
 import { addNote, selectNotes } from '../../../redux/slices/notesSlice.js'
-import { addTab, toggleSidebar } from '../../../redux/slices/uiSlice.js'
+import { toggleSidebar } from '../../../redux/slices/uiSlice.js'
 import Dropdown from '../../UI-Components/Drowdown/Dropdown.jsx'
 import InputLabel from '../../UI-Components/Label/InputLabel.jsx'
 import Modal from '../../UI-Components/Modal/Modal.jsx'
@@ -28,9 +28,7 @@ function Tools() {
 		}
 
 		dispatch(addNote({ id: noteId, name: noteName }))
-		dispatch(
-			addTab({ id: noteId, name: noteName, isOpen: false, isActive: false })
-		)
+
 		setNoteName('')
 		setInputIsShow(false)
 	}

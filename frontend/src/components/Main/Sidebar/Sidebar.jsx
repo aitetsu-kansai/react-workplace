@@ -68,6 +68,8 @@ function Sidebar() {
 				setSidebarWidth('auto')
 			}, 250)
 		}
+		console.log(filteredSidebarNotes)
+
 		document.addEventListener('mousemove', resize)
 		document.addEventListener('mouseup', stopResizing)
 		return () => {
@@ -110,8 +112,9 @@ function Sidebar() {
 										dispatch(toggleTab({ id: el.id, type: 'open' }))
 									}
 								}}
+								key={el.id}
 							>
-								<p key={el.id}>{el.name}</p>
+								<p>{el.name}</p>
 								<RxCross1
 									onMouseUp={e => {
 										e.stopPropagation()
@@ -126,28 +129,6 @@ function Sidebar() {
 					{tabs.length > 0 && filteredSidebarNotes.length === 0 && (
 						<h4>{'The note was not found on request'}</h4>
 					)}
-					{sidebarTabFilter !== '' &&
-						tabs
-							.filter(el => el.name === sidebarTabFilter)
-							.map(el => {
-								;<p
-									key={el.id}
-									className={el.isActive ? 'active' : ''}
-									onMouseUp={e => {
-										if (e.button === 0) {
-											dispatch(toggleTab({ id: el.id, type: 'open' }))
-											dispatch(setTabIsActive(el.id))
-										}
-										if (e.button === 1) {
-											console.log(1)
-
-											dispatch(toggleTab({ id: el.id, type: 'open' }))
-										}
-									}}
-								>
-									{el.name}
-								</p>
-							})}
 				</NotesFolder>
 				<div
 					className={style['resizer']}

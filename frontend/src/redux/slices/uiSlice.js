@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { addNote, removeNote } from './notesSlice'
 
 const initialState = {
 	isSidebarVisible: true,
@@ -12,9 +13,9 @@ const uiSlice = createSlice({
 		toggleSidebar: state => {
 			state.isSidebarVisible = !state.isSidebarVisible
 		},
-		addTab: (state, action) => {
-			state.tabs.push(action.payload)
-		},
+		// addTab: (state, action) => {
+		// 	state.tabs.push(action.payload)
+		// },
 
 		toggleTab: (state, action) => {
 			const { id, type = 'toggle' } = action.payload
@@ -35,16 +36,34 @@ const uiSlice = createSlice({
 			}
 		},
 
+		// removeTab: (state, action) => {
+		// 	return {
+		// 		...state,
+		// 		tabs: state.tabs.filter(tab => tab.id !== action.payload),
+		// 	}
+		// },
+
 		setTabIsActive: (state, action) => {
 			const curTab = state.tabs.find(tab => tab.id === action.payload)
 			state.tabs.forEach(tab => (tab.isActive = false))
 			curTab.isActive = true
 		},
 	},
+	extraReducers: builder => {
+		builder.addCase(removeNote, (state, action) => {
+			return {
+				...state,
+				tabs: state.tabs.filter(tab => tab.id !== action.payload),
+			}
+		})
+		builder.addCase(addNote, (state, action) => {
+			const newTab = { ...action.payload, isOpen: false, isActive: false }
+			state.tabs.push(newTab)
+		})
+	},
 })
 
-export const { toggleSidebar, addTab, toggleTab, setTabIsActive } =
-	uiSlice.actions
+export const { toggleSidebar, toggleTab, setTabIsActive } = uiSlice.actions
 
 export const selectSidebebarVisibleState = state => state.ui.isSidebarVisible
 export const selectTabs = state => state.ui.tabs

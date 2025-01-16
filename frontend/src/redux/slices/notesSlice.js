@@ -15,11 +15,10 @@ const notesSlice = createSlice({
 		removeNote: (state, action) => {
 			const noteToRemoveId = action.payload
 			console.log(noteToRemoveId)
-			return state.notes.filter(note => note.id !== noteToRemoveId)
-			// return {
-			// 	...state,
-			// 	notes: state.notes.filter(note => note.id !== noteToRemoveId),
-			// }
+			return {
+				...state,
+				notes: state.notes.filter(note => note.id !== noteToRemoveId),
+			}
 		},
 		//Groups
 		addGroup: (state, action) => {
