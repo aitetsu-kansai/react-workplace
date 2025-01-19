@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { FaFolderOpen } from 'react-icons/fa'
+import { IoFolder, IoFolderOpen } from 'react-icons/io5'
+
 import { IoIosArrowForward } from 'react-icons/io'
 import './NotesFolder.scss'
 function NotesFolder({ children }) {
@@ -15,7 +16,7 @@ function NotesFolder({ children }) {
 					className={`folder-arrow${folderIsOpen ? '--open' : ''}`}
 				/>
 				<div className='header__title'>
-					<FaFolderOpen />
+					{folderIsOpen ? <IoFolderOpen /> : <IoFolder />}
 					<h3>All notes</h3>
 				</div>
 			</div>

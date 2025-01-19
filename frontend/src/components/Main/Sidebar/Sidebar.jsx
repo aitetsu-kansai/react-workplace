@@ -3,6 +3,7 @@ import { RxCross1 } from 'react-icons/rx'
 import NotesFolder from './NotesFolder/NotesFolder'
 
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { selectSidebarTabFilter } from '../../../redux/slices/filterSlice'
 import { removeNote } from '../../../redux/slices/notesSlice'
 import {
@@ -17,6 +18,7 @@ import style from './Sidebar.module.scss'
 
 function Sidebar() {
 	const dispatch = useDispatch()
+	const navigate = useNavigate()
 	const tabs = useSelector(selectTabs)
 	const sidebarVisibleState = useSelector(selectSidebebarVisibleState)
 	const sidebarTabFilter = useSelector(selectSidebarTabFilter)
@@ -40,6 +42,10 @@ function Sidebar() {
 		setIsResizing(false)
 	}, [])
 
+	const handleNavigate = url => {
+		navigate(url)
+	}
+
 	const resize = useCallback(
 		mouseMoveEvent => {
 			if (isResizing && sidebarVisibleState) {
@@ -59,8 +65,6 @@ function Sidebar() {
 	)
 
 	useEffect(() => {
-		console.log('use effect')
-		console.log(tabs)
 		let timeout
 		if (sidebarWidth < 200) {
 			dispatch(toggleSidebar())
@@ -105,10 +109,14 @@ function Sidebar() {
 								}`}
 								onMouseUp={e => {
 									if (e.button === 0) {
-										dispatch(toggleTab({ id: el.id, type: 'open' }))
-										dispatch(setTabIsActive(el.id))
+										!el.isOpen &&
+											dispatch(toggleTab({ id: el.id, type: 'open' }))
+										if (!el.isActive) {
+											dispatch(setTabIsActive(el.id))
+											handleNavigate(el.id)
+										}
 									}
-									if (e.button === 1) {
+									if (e.button === 1 && !el.isOpen) {
 										dispatch(toggleTab({ id: el.id, type: 'open' }))
 									}
 								}}
@@ -119,6 +127,7 @@ function Sidebar() {
 									onMouseUp={e => {
 										e.stopPropagation()
 										dispatch(removeNote(el.id))
+										handleNavigate(`/notes`)
 									}}
 								/>
 							</div>

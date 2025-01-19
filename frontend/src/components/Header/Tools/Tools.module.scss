@@ -6,18 +6,32 @@
 	gap: 5px;
 	// padding: 10px;
 	align-items: center;
-	
+
+	a {
+		display: flex;
+		align-items: center;
+		padding: 0px;
+		margin: 0px;
+		width: inherit;
+		height: inherit;
+	}
+
 	svg {
 		font-size: vars.$large-text-size;
 		transition: 0.3s all ease-out;
 		fill: vars.$accent-color;
 		border-radius: 5px;
 		padding: 3px;
-	}
-	svg:hover {
-		cursor: pointer;
-		background-color: vars.$accent-color;
-		fill: vars.$main-color;
+		&:hover,
+		&.active {
+			cursor: pointer;
+			background-color: vars.$secondary-accent-color;
+			fill: vars.$main-color;
+		}
+		&.active {
+			background-color: vars.$accent-color;
+			fill: vars.$main-color;
+		}
 	}
 }
 

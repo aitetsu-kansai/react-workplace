@@ -13,9 +13,6 @@ const uiSlice = createSlice({
 		toggleSidebar: state => {
 			state.isSidebarVisible = !state.isSidebarVisible
 		},
-		// addTab: (state, action) => {
-		// 	state.tabs.push(action.payload)
-		// },
 
 		toggleTab: (state, action) => {
 			const { id, type = 'toggle' } = action.payload
@@ -35,13 +32,6 @@ const uiSlice = createSlice({
 				}
 			}
 		},
-
-		// removeTab: (state, action) => {
-		// 	return {
-		// 		...state,
-		// 		tabs: state.tabs.filter(tab => tab.id !== action.payload),
-		// 	}
-		// },
 
 		setTabIsActive: (state, action) => {
 			const curTab = state.tabs.find(tab => tab.id === action.payload)
