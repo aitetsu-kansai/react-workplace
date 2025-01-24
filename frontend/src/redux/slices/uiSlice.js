@@ -57,5 +57,7 @@ export const { toggleSidebar, toggleTab, setTabIsActive } = uiSlice.actions
 
 export const selectSidebebarVisibleState = state => state.ui.isSidebarVisible
 export const selectTabs = state => state.ui.tabs
+export const selectActiveTab = state =>
+	state.ui.tabs.find(tab => tab.isActive === true)
 
 export default uiSlice.reducer

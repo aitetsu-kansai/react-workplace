@@ -1,10 +1,10 @@
 import style from './Header.module.scss'
 import Tabs from './Tabs/Tabs'
-import Tools from './Tools/Tools'
+import HeaderTools from './Tools/HeaderTools'
 function Header() {
 	return (
 		<div className={style.header}>
-			<Tools />
+			<HeaderTools />
 			<Tabs />
 		</div>
 	)

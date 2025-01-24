@@ -4,3 +4,8 @@
 	background-color: vars.$main-color;
 	text-align: center;
 }
+.note__groups {
+	display: flex;
+	gap: 30px;
+	padding-inline: 30px;
+}

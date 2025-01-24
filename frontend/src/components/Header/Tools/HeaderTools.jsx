@@ -10,17 +10,20 @@ import { BiSolidBookBookmark } from 'react-icons/bi'
 import { v4 as uuidv4 } from 'uuid'
 import { setInfo } from '../../../redux/slices/infoSlice.js'
 import { addNote, selectNotes } from '../../../redux/slices/notesSlice.js'
-import { toggleSidebar } from '../../../redux/slices/uiSlice.js'
+import {
+	selectActiveTab,
+	toggleSidebar,
+} from '../../../redux/slices/uiSlice.js'
 import Dropdown from '../../UI-Components/Drowdown/Dropdown.jsx'
 import InputLabel from '../../UI-Components/Label/InputLabel.jsx'
 import Modal from '../../UI-Components/Modal/Modal.jsx'
 
-import style from './Tools.module.scss'
+import style from './HeaderTools.module.scss'
 function Tools() {
 	const location = useLocation()
 	const dispatch = useDispatch()
 	const notes = useSelector(selectNotes)
-
+	const activeTab = useSelector(selectActiveTab)
 	const handleOnSubmit = e => {
 		const noteId = uuidv4()
 		e.preventDefault()
@@ -38,9 +41,9 @@ function Tools() {
 		setNoteName('')
 		setInputIsShow(false)
 	}
-	console.log(location)
 
-	// const selectSidebarVisibleState = useSelector(selectSidebebarVisibleState)
+	console.log(activeTab)
+
 	const handleToggleSidebar = () => dispatch(toggleSidebar())
 
 	const [inputIsShow, setInputIsShow] = useState(false)
@@ -58,7 +61,7 @@ function Tools() {
 			<Link to='/'>
 				<GoHomeFill className={location.pathname === '/' && style['active']} />
 			</Link>
-			<Link to='/notes'>
+			<Link to={`/notes/${activeTab.id}`}>
 				{location.pathname.includes('/notes') ? (
 					<IoIosBookmarks className={style['active']} />
 				) : (
