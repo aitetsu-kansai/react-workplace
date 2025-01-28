@@ -37,6 +37,7 @@ function Tabs() {
 							noteName={el.name}
 							onCrossClick={e => handleCrossClick(e, el.id)}
 							onTabClick={() => handleTabClick(el.id, el.name)}
+							key={el.id}
 						/>
 					)
 			)}

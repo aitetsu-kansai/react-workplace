@@ -6,6 +6,46 @@
 }
 .note__groups {
 	display: flex;
+	flex-wrap: wrap;
 	gap: 30px;
 	padding-inline: 30px;
+}
+
+.note__header-tools {
+	font-size: vars.$large-text-size;
+}
+
+.group-task {
+	display: flex;
+	// width: 100%;
+	padding-inline: 10px;
+	align-items: center;
+	border: 1px vars.$secondary-accent-color solid;
+	border-radius: 12px;
+	justify-content: center;
+	margin-block: 15px;
+	margin-inline: 5px;
+	p {
+		word-wrap: break-word;
+		margin: 0;
+		padding: 5px;
+		padding-inline: 10px;
+		max-width: 70%;
+		overflow-wrap: break-word;
+		word-break: break-word;
+		padding-inline: 10px;
+	}
+	input {
+		box-shadow: none;
+		padding: 0;
+		margin: 0;
+		width: auto;
+		&:hover,
+		&:focus {
+			box-shadow: none;
+		}
+	}
+	svg:hover {
+		cursor: pointer;
+	}
 }

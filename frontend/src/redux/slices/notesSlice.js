@@ -3,6 +3,7 @@ import { createSelector, createSlice } from '@reduxjs/toolkit'
 const initialState = {
 	notes: [],
 	groups: [],
+	tasks: [],
 }
 
 const notesSlice = createSlice({
@@ -16,35 +17,52 @@ const notesSlice = createSlice({
 		removeNote: (state, action) => {
 			const noteToRemoveId = action.payload
 			state.notes = state.notes.filter(note => note.id !== noteToRemoveId)
+			state.groups = state.groups.filter(
+				group => group.noteId !== noteToRemoveId
+			)
+			state.tasks = state.tasks.filter(tasks => tasks.noteId !== noteToRemoveId)
 		},
 		//Groups
 		addGroup: (state, action) => {
-			const { noteId, groupName } = action.payload
+			const { noteId, groupName, groupId } = action.payload
 			const currentNote = state.notes.find(note => note.id === noteId)
 			if (currentNote) {
-				state.groups.push({ noteId: currentNote.id, groupName })
+				state.groups.push({ noteId: currentNote.id, groupName, groupId })
 			}
 		},
 
 		//Tasks
 		addTask: (state, action) => {
-			const { noteId, groupId, task } = action.payload
-			const currentNote = state.notes.find(note => note.id === noteId)
-			const currentGroup = currentNote?.find(group => group.id === groupId)
+			const {
+				groupId,
+				noteId,
+				taskId,
+				taskName,
+				status = false,
+			} = action.payload
+			const currentGroup = state.groups?.find(group => group.noteId === noteId)
 			if (currentGroup) {
-				currentGroup.tasks.push(task)
+				console.log(taskName)
+
+				state.tasks.push({ groupId, noteId, taskId, taskName, status })
 			}
 		},
 	},
 })
 
 export const { addGroup, addNote, addTask, removeNote } = notesSlice.actions
-export const selectNotes = state => state.notes
+export const selectNotes = state => state.notes.notes
+export const selectGroups = state => state.notes.groups
 export const selectNoteById = (state, id) =>
 	state.notes.notes.find(note => note.id === id)
 export const selectGroupsById = createSelector(
 	[state => state.notes.groups, (state, id) => id],
 	(groups, noteId) => groups.filter(group => group.noteId === noteId)
+)
+
+export const selectTasksById = createSelector(
+	[state => state.notes.tasks, (state, id) => id],
+	(tasks, noteId) => tasks.filter(task => task.noteId === noteId)
 )
 
 export default notesSlice.reducer

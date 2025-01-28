@@ -7,13 +7,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link, useLocation } from 'react-router-dom'
 
 import { BiSolidBookBookmark } from 'react-icons/bi'
-import { v4 as uuidv4 } from 'uuid'
 import { setInfo } from '../../../redux/slices/infoSlice.js'
 import { addNote, selectNotes } from '../../../redux/slices/notesSlice.js'
 import {
 	selectActiveTab,
 	toggleSidebar,
 } from '../../../redux/slices/uiSlice.js'
+import { generateId } from '../../../utils/generateRandomId.js'
 import Dropdown from '../../UI-Components/Drowdown/Dropdown.jsx'
 import InputLabel from '../../UI-Components/Label/InputLabel.jsx'
 import Modal from '../../UI-Components/Modal/Modal.jsx'
@@ -25,10 +25,11 @@ function Tools() {
 	const notes = useSelector(selectNotes)
 	const activeTab = useSelector(selectActiveTab)
 	const handleOnSubmit = e => {
-		const noteId = uuidv4()
+		const noteId = generateId()
+
 		e.preventDefault()
 
-		const isDublicate = notes.notes.some(note => noteName === note.name)
+		const isDublicate = notes.some(note => noteName === note.name)
 		if (isDublicate) {
 			dispatch(
 				setInfo({ infoMessage: 'The note with this name is already created' })
@@ -61,7 +62,7 @@ function Tools() {
 			<Link to='/'>
 				<GoHomeFill className={location.pathname === '/' && style['active']} />
 			</Link>
-			<Link to={`/notes/${activeTab.id}`}>
+			<Link to={`/notes/${activeTab?.id}`}>
 				{location.pathname.includes('/notes') ? (
 					<IoIosBookmarks className={style['active']} />
 				) : (
