@@ -1,15 +1,16 @@
 @use '../../../../variables.scss' as vars;
 
 .folder-container {
-	background-color: vars.$accent-color;
-	color: vars.$main-color;
+	background-color: var(--accent-color);
+	color: var(--main-color);
 	display: flex;
 	flex-direction: column;
-	font-size: vars.$standart-text-size;
+	font-size: var(--standart-text-size);
 	font-weight: 500;
 	margin: 15px;
 	border-radius: 15px;
 	padding: 5px;
+	transition: 0.15s all ease;
 
 	h3 {
 		margin: 0;
@@ -26,12 +27,12 @@
 	svg {
 		padding: 0;
 		margin: 0;
-		font-size: vars.$standart-text-size;
+		font-size: var(--standart-text-size);
 	}
 }
 
 .folder-container__header:hover {
-	background-color: vars.$secondary-accent-color;
+	background-color: var(--secondary-accent-color);
 	cursor: pointer;
 }
 
@@ -46,7 +47,7 @@
 }
 
 .folder-arrow {
-	font-size: vars.$standart-text-size;
+	font-size: var(--standart-text-size);
 	transition: 0.22s all ease-in;
 	&--open {
 		transition: 0.22s all ease-in;

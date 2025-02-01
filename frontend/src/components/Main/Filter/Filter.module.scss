@@ -2,18 +2,26 @@
 
 .filter-container {
 	padding-top: 15px;
+	transition: var(--theme-toggle-transition);
 }
 
 .filter-input {
 	margin: 15px;
-	transition: 0.3s all ease;
+	transition: var(--theme-toggle-transition);
+
 	display: flex;
 	align-items: center;
-	background-color: vars.$secondary-main-color;
+	background-color: var(--secondary-main-color);
 	border-radius: 10px;
 	padding-inline: 10px;
+	svg {
+		color: var(--accent-color);
+	}
 	input {
-		background-color: vars.$secondary-main-color;
+		background-color: var(--secondary-main-color);
+		color: var(--accent-color);
+		transition: var(--theme-toggle-transition);
+
 		border-color: none;
 		box-shadow: none;
 		&:hover {
@@ -25,9 +33,9 @@
 	}
 
 	&:hover {
-		box-shadow: 0 0 0 0.1vw vars.$secondary-accent-color;
+		box-shadow: 0 0 0 0.1vw var(--secondary-accent-color);
 	}
 	&.focus {
-		box-shadow: 0 0 0 0.1vw vars.$accent-color;
+		box-shadow: 0 0 0 0.1vw var(--accent-color);
 	}
 }

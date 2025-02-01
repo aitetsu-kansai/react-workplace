@@ -1,14 +1,15 @@
 @use '../../../variables.scss' as vars;
 
 .wrapper {
-	background-color: vars.$main-color;
+	background-color: var(--main-color);
 	position: relative;
 	max-width: 0;
 	opacity: 0;
 	overflow: hidden;
 	transform: translateX(-100%);
-	transition: 0.15s opacity ease-out, 0.25s max-width ease-out,
-		transform 0.25s ease-out;
+
+	transition: var(--theme-toggle-transition), 0.15s opacity ease-out,
+		0.25s max-width ease-out, 0.25s display ease, transform 0.25s ease-out;
 
 	&.show {
 		min-width: 200px;
@@ -31,11 +32,11 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		transition: 0.15s all ease-in;
+		transition: 0.15s all ease;
 		border-radius: 8px;
 		padding-inline: 15px;
 		&:hover {
-			background-color: vars.$secondary-accent-color;
+			background-color: var(--secondary-accent-color);
 			cursor: pointer;
 		}
 		p {
@@ -46,27 +47,27 @@
 		}
 
 		svg {
-			font-size: vars.$small-text-size;
+			font-size: var(--small-text-size);
 			transition: 0.3s all ease-out;
 			padding: 2px;
 			border-radius: 50%;
 			&:hover {
-				background-color: vars.$secondary-main-color;
-				color: vars.$accent-color;
+				background-color: var(--secondary-main-color);
+				color: var(--accent-color);
 			}
 		}
 
 		&.active {
-			background-color: vars.$secondary-main-color;
-			color: vars.$accent-color;
+			background-color: var(--secondary-main-color);
+			color: var(--accent-color);
 		}
 		&.active:hover {
-			background-color: vars.$main-color;
+			background-color: var(--main-color);
 		}
 
 		&.active svg:hover {
-			background-color: vars.$accent-color;
-			color: vars.$secondary-main-color;
+			background-color: var(--accent-color);
+			color: var(--secondary-main-color);
 		}
 	}
 }
@@ -81,11 +82,12 @@
 	right: 0;
 	width: 2px;
 	height: 100%;
-	background-color: vars.$accent-color;
+	background-color: var(--accent-color);
 	transition: 0.1s all ease-in-out;
+
 	&:hover {
 		cursor: col-resize;
-		background-color: vars.$secondary-accent-color;
+		background-color: var(--secondary-accent-color);
 		border-radius: 5px;
 		padding: 2px;
 	}

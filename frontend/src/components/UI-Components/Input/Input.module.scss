@@ -6,19 +6,19 @@
 		border-radius: 0px;
 		border: none;
 		border-radius: 0px 5px 5px 0px;
-		color: vars.$main-color;
-		background-color: vars.$accent-color;
+		color: var(--main-color);
+		background-color: var(--accent-color);
+		transition: 0.25s ease-in;
+		&:hover {
+			background-color: var(--secondary-accent-color);
+		}
 	}
 
 	input {
-		// background-color: vars.$main-color;
-		// border-top-left-radius: 5px;
-		// border-bottom-left-radius: 5px;
-		// border-bottom-right-radius: 5px;
 		border-radius: 5px 0px 0px 5px;
 		padding: 5px;
-		// background-color: vars.$secondary-main-color;
-		// background-color: red;
+		background-color: var(--main-color);
+		color: var(--accent-color);
 		&,
 		&:hover,
 		&:focus {

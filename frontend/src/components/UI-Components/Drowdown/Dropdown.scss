@@ -10,7 +10,7 @@
 	position: absolute;
 	justify-content: center;
 	list-style: none;
-	background-color: vars.$secondary-main-color;
+	background-color: var(--secondary-main-color);
 	padding: 10px;
 	border-radius: 15px;
 	font-weight: 600;
@@ -34,11 +34,11 @@
 	font-size: 24px;
 	margin-left: auto;
 	transition: 0.2s all ease-in;
-	color: vars.$accent-color;
+	color: var(--accent-color);
 	position: relative;
 }
 
 .more-info__ico:hover {
-	color: vars.$secondary-main-color;
+	color: var(--secondary-main-color);
 	cursor: pointer;
 }

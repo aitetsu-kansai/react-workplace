@@ -1,5 +1,5 @@
 import { RxCross1 } from 'react-icons/rx'
-import style from './Tab.module.scss'
+import style from "./Tab.module.scss"
 function Tab({
 	noteName = 'Untitled note',
 	activeClassName,

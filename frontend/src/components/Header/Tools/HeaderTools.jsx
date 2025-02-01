@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { GoHomeFill } from 'react-icons/go'
 import { IoIosBookmarks } from 'react-icons/io'
-import { MdLightMode } from 'react-icons/md'
 import { RiSidebarFoldFill, RiStickyNoteAddFill } from 'react-icons/ri'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useLocation } from 'react-router-dom'
@@ -19,6 +18,7 @@ import InputLabel from '../../UI-Components/Label/InputLabel.jsx'
 import Modal from '../../UI-Components/Modal/Modal.jsx'
 
 import style from './HeaderTools.module.scss'
+import ThemeSwitcher from './ThemeSwitcher/ThemeSwitcher.jsx'
 function Tools() {
 	const location = useLocation()
 	const dispatch = useDispatch()
@@ -59,19 +59,25 @@ function Tools() {
 
 	const toolsContent = (
 		<>
-			<Link to='/'>
+			<Link to='/' title='Home page'>
 				<GoHomeFill className={location.pathname === '/' && style['active']} />
 			</Link>
-			<Link to={`/notes/${activeTab?.id}`}>
+			<Link to={`/notes/${activeTab?.id}`} title='Notes'>
 				{location.pathname.includes('/notes') ? (
 					<IoIosBookmarks className={style['active']} />
 				) : (
 					<BiSolidBookBookmark />
 				)}
 			</Link>
-			<RiStickyNoteAddFill onClick={() => setInputIsShow(true)} />
-			<RiSidebarFoldFill onClick={handleToggleSidebar} />
-			<MdLightMode />
+			<RiStickyNoteAddFill
+				onClick={() => setInputIsShow(true)}
+				title='Create a new note'
+			/>
+			<RiSidebarFoldFill
+				onClick={handleToggleSidebar}
+				title='Hide/Show a sidebar'
+			/>
+			<ThemeSwitcher />
 		</>
 	)
 

@@ -4,6 +4,7 @@ import { addNote, removeNote } from './notesSlice'
 const initialState = {
 	isSidebarVisible: true,
 	tabs: [], // {id: 1, name:"Note", isOpen: true, isActive: true}
+	theme: 'dark',
 }
 
 const uiSlice = createSlice({
@@ -38,6 +39,17 @@ const uiSlice = createSlice({
 			state.tabs.forEach(tab => (tab.isActive = false))
 			curTab.isActive = true
 		},
+
+		toggleTheme: (state, action) => {
+			const theme = action?.payload
+			if (!theme) {
+				state.theme = state.theme === 'dark' ? 'light' : 'dark'
+			} else {
+				state.theme = theme
+			}
+			document.documentElement.setAttribute('data-theme', state.theme)
+			localStorage.setItem('theme', state.theme)
+		},
 	},
 	extraReducers: builder => {
 		builder.addCase(removeNote, (state, action) => {
@@ -53,11 +65,14 @@ const uiSlice = createSlice({
 	},
 })
 
-export const { toggleSidebar, toggleTab, setTabIsActive } = uiSlice.actions
+export const { toggleSidebar, toggleTab, setTabIsActive, toggleTheme } =
+	uiSlice.actions
 
 export const selectSidebebarVisibleState = state => state.ui.isSidebarVisible
 export const selectTabs = state => state.ui.tabs
 export const selectActiveTab = state =>
 	state.ui.tabs.find(tab => tab.isActive === true)
+
+export const selectTheme = state => state.ui.theme
 
 export default uiSlice.reducer

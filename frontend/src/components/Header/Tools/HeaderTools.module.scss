@@ -6,7 +6,6 @@
 	gap: 5px;
 	// padding: 10px;
 	align-items: center;
-
 	a {
 		display: flex;
 		align-items: center;
@@ -17,20 +16,21 @@
 	}
 
 	svg {
-		font-size: vars.$large-text-size;
+		font-size: var(--large-text-size);
+
 		transition: 0.3s all ease-out;
-		fill: vars.$accent-color;
+		fill: var(--accent-color);
 		border-radius: 5px;
 		padding: 3px;
 		&:hover,
 		&.active {
 			cursor: pointer;
-			background-color: vars.$secondary-accent-color;
-			fill: vars.$main-color;
+			background-color: var(--secondary-accent-color);
+			fill: var(--main-color);
 		}
 		&.active {
-			background-color: vars.$accent-color;
-			fill: vars.$main-color;
+			background-color: var(--accent-color);
+			fill: var(--main-color);
 		}
 	}
 }

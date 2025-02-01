@@ -1,7 +1,7 @@
 @use '../../../../variables.scss' as vars;
 
 .group-container {
-	background-color: vars.$secondary-main-color;
+	background-color: var(--secondary-main-color);
 	border-radius: 12px;
 	width: 270px;
 	border: 1px black;
@@ -15,7 +15,6 @@
 		margin: 0;
 		padding: 10px;
 		gap: 10px;
-
 		h4 {
 			margin: 0;
 		}
@@ -23,14 +22,15 @@
 }
 
 .group-header__title {
+	color: var(--accent-color);
 	display: flex;
 	align-items: center;
 	// justify-content: center;
 	gap: 10px;
 
 	svg {
-		font-size: vars.$medium-text-size;
-		color: vars.$accent-color;
+		font-size: var(--medium-text-size);
+		color: var(--accent-color);
 		&:first-child {
 			cursor: grab;
 			transition: 0.2s background-color ease;
@@ -38,8 +38,8 @@
 		}
 		&:first-child:active {
 			cursor: grabbing;
-			background-color: vars.$accent-color;
-			color: vars.$main-color;
+			background-color: var(--accent-color);
+			color: var(--main-color);
 		}
 		&:nth-child(2) {
 			cursor: pointer;
@@ -51,7 +51,7 @@
 	height: fit-content;
 	// max-height: 70vh;
 	overflow-y: auto;
-	background-color: vars.$secondary-main-color;
+	background-color: var(--secondary-main-color);
 	border-radius: 12px;
 	max-height: 0;
 	transition: 0.2s all ease;

@@ -1,15 +1,15 @@
 @use '../../../variables.scss' as vars;
 
 .tab-container {
-	border: 2px, vars.$accent-color solid;
+	border: 2px, var(--accent-color) solid;
 	display: flex;
 	// justify-content: space-between;
 	align-items: center;
 	padding-inline: 10px;
 	border-radius: 12px;
-	gap: vars.$standart-text-size;
-	font-size: vars.$standart-text-size;
-	color: vars.$accent-color;
+	gap: var(--standart-text-size);
+	font-size: var(--standart-text-size);
+	color: var(--accent-color);
 	transition: 0.3s all ease-out;
 
 	p {
@@ -21,26 +21,26 @@
 	}
 
 	&.active {
-		background-color: vars.$accent-color;
-		color: vars.$secondary-main-color;
+		background-color: var(--accent-color);
+		color: var(--secondary-main-color);
 	}
 
 	svg {
-		font-size: vars.$small-text-size;
+		font-size: var(--small-text-size);
 		transition: 0.3s all ease-out;
 		padding: 2px;
 		border-radius: 50%;
 	}
 	svg:hover {
 		cursor: pointer;
-		background-color: vars.$main-color;
-		color: vars.$accent-color;
+		background-color: var(--main-color);
+		color: var(--accent-color);
 	}
 }
 
 .tab-container:hover {
 	cursor: pointer;
-	background-color: vars.$secondary-accent-color;
-	color: vars.$main-color;
-	border-color: vars.$secondary-accent-color;
+	background-color: var(--secondary-accent-color);
+	color: var(--main-color);
+	border-color: var(--secondary-accent-color);
 }

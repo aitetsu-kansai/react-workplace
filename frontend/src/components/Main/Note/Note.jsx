@@ -8,9 +8,11 @@ import { setInfo } from '../../../redux/slices/infoSlice'
 
 import {
 	addGroup,
+	deleteTask,
 	selectGroupsById,
 	selectNoteById,
 	selectTasksById,
+	toggleTask,
 } from '../../../redux/slices/notesSlice'
 import { generateId } from '../../../utils/generateRandomId'
 import InputLabel from '../../UI-Components/Label/InputLabel'
@@ -44,6 +46,15 @@ function Note() {
 		}
 	}
 
+	const handleToggleTask = (e, taskId) => {
+		e.stopPropagation()
+		dispatch(toggleTask(taskId))
+	}
+
+	const handleDeleteTask = taskId => {
+		dispatch(deleteTask(taskId))
+	}
+
 	return (
 		<div className={style['note-container']}>
 			<div className={style['note__header']}>
@@ -54,6 +65,7 @@ function Note() {
 							onClick={() => {
 								setInputIsShow(!inputIsShow)
 							}}
+							title='Create a new group'
 						/>
 					)}
 				</div>
@@ -63,7 +75,7 @@ function Note() {
 					return (
 						<Group
 							groupName={group.groupName}
-							key={generateId()}
+							key={group.groupId}
 							groupId={group.groupId}
 							noteId={group.noteId}
 						>
@@ -71,10 +83,27 @@ function Note() {
 								.filter(task => task.groupId === group.groupId)
 								.map(task => {
 									return (
-										<div className={style['group-task']}>
-											<input type='checkbox' />
-											<p key={generateId()}> {task.taskName}</p>
-											<RxCross1 />
+										<div
+											className={`${style['group-task']} ${
+												task.status && style['group-task--done']
+											}`}
+											key={task.taskId}
+										>
+											<label className='custom-checkbox'>
+												<input
+													type='checkbox'
+													checked={task.status}
+													onMouseDown={e => {
+														console.log(e.target)
+														// e.stopPropagation()
+													}}
+													onChange={e => handleToggleTask(e, task.taskId)}
+												/>
+												<span></span>
+											</label>
+
+											<p> {task.taskName}</p>
+											<RxCross1 onClick={() => handleDeleteTask(task.taskId)} />
 										</div>
 									)
 								})}

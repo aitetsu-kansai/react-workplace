@@ -1,11 +1,10 @@
-@use '../../variables' as vars;
-
 .header {
 	display: grid;
-	grid-template-columns: vars.$grid-column-template;
-	// background-color: vars.$main-color;
+	grid-template-columns: var(--grid-column-template);
+	background-color: var(--main-color);
 	// height: 50px;
 	padding-block: 15px;
 	text-align: center;
-	border-bottom: 1.5px vars.$accent-color solid;
+	border-bottom: 2px var(--accent-color) solid;
+	transition: var(--theme-toggle-transition);
 }

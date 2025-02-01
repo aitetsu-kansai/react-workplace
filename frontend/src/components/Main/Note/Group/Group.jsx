@@ -33,9 +33,12 @@ function Group({ children, groupName, noteId, groupId }) {
 			<div className={style['group-header']}>
 				<div className={style['group-header__title']}>
 					<MdDragIndicator />
-					<IoIosArrowForward onClick={handleHideTask} className={`${style['task-arrow']} ${
-					taskIsOpen ? style['task-arrow--open'] : ''
-				}`}/>
+					<IoIosArrowForward
+						onClick={handleHideTask}
+						className={`${style['task-arrow']} ${
+							taskIsOpen ? style['task-arrow--open'] : ''
+						}`}
+					/>
 					<h4>{groupName}</h4>
 				</div>
 				<Input

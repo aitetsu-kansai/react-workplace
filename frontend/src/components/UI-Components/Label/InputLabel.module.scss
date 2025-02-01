@@ -8,25 +8,25 @@
 	align-items: center;
 	// gap: 15px;
 	padding: 0 20px;
-	background-color: vars.$main-color;
-	// border: 2px vars.$accent-color solid;
+	background-color: var(--main-color);
+	// border: 2px --accent-color solid;
 	border-radius: 22px;
-	border: 2px vars.$accent-color solid;
+	border: 2px var(--accent-color) solid;
 }
 
 .input__label-container {
-	background-color: vars.$accent-color;
-	color: black;
+	background-color: var(--accent-color);
+	color: var(--main-color);
 	border-top-left-radius: 15px;
 	border-top-right-radius: 15px;
 	padding: 15px 20px;
-	font-size: vars.$medium-text-size;
+	font-size: var(--medium-text-size);
 	font-weight: bold;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	border-bottom: 1px vars.$accent-color solid;
+	border-bottom: 1px var(--accent-color) solid;
 	width: 100%;
 }
 
@@ -34,14 +34,17 @@
 	text-align: center;
 	padding: 30px;
 	border-bottom-left-radius: 15px;
+
 	border-bottom-right-radius: 15px;
 }
 
 .input,
 .input[type='date'] {
+	color: var(--accent-color);
+
 	font-weight: 500;
 	font-size: 17px;
-	background-color: rgb(28, 28, 30);
+	background-color: var(--secondary-main-color);
 	box-shadow: 0 0 0.4vw rgba(0, 0, 0, 0.5), 0 0 0 0.15vw transparent;
 	border-radius: 0.4vw;
 	border: none;
@@ -55,17 +58,17 @@
 
 .input:hover,
 .textarea:hover {
-	box-shadow: 0 0 0 0.1vw vars.$secondary-accent-color;
+	box-shadow: 0 0 0 0.1vw var(--secondary-accent-color);
 }
 
 .input:focus,
 .textarea:focus {
-	box-shadow: 0 0 0 0.1vw vars.$accent-color;
+	box-shadow: 0 0 0 0.1vw var(--accent-color);
 }
 
 ::-webkit-calendar-picker-indicator {
-	background-color: vars.$accent-color;
-	background-color: vars.$secondary-main-color;
+	background-color: var(--accent-color);
+	background-color: var(--secondary-main-color);
 	border-radius: 7px;
 	padding: 5px;
 	cursor: pointer;

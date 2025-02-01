@@ -5,5 +5,5 @@
 	// font-size: 22px;
 	text-align: center;
 	display: grid;
-	grid-template-columns: vars.$grid-column-template;
+	grid-template-columns: var(--grid-column-template);
 }
