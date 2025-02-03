@@ -1,0 +1,94 @@
+@use '../../../variables.scss' as vars;
+
+.wrapper {
+	background-color: var(--main-color);
+	position: relative;
+	max-width: 0;
+	opacity: 0;
+	overflow: hidden;
+	transform: translateX(-100%);
+
+	transition: var(--theme-toggle-transition), 0.15s opacity ease-out,
+		0.25s max-width ease-out, 0.25s display ease, transform 0.25s ease-out;
+
+	&.show {
+		min-width: 200px;
+		max-width: 600px;
+		opacity: 1;
+		transform: translateX(0);
+	}
+	&.alert {
+		opacity: 0.4;
+	}
+}
+
+.sidebar-container {
+	display: flex;
+	flex-direction: column;
+
+	min-width: 100%;
+	height: 100%;
+	&__element {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		transition: 0.15s all ease;
+		border-radius: 8px;
+		padding-inline: 15px;
+		&:hover {
+			background-color: var(--secondary-accent-color);
+			cursor: pointer;
+		}
+		p {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			margin: 0;
+			max-width: calc(100% - 24px);
+		}
+
+		svg {
+			font-size: var(--small-text-size);
+			transition: 0.3s all ease-out;
+			padding: 2px;
+			border-radius: 50%;
+			&:hover {
+				background-color: var(--secondary-main-color);
+				color: var(--accent-color);
+			}
+		}
+
+		&.active {
+			background-color: var(--secondary-main-color);
+			color: var(--accent-color);
+		}
+		&.active:hover {
+			background-color: var(--main-color);
+		}
+
+		&.active svg:hover {
+			background-color: var(--accent-color);
+			color: var(--secondary-main-color);
+		}
+	}
+}
+
+.filter-field {
+	padding-top: 15px;
+}
+
+.resizer {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 2px;
+	height: 100%;
+	background-color: var(--accent-color);
+	transition: 0.1s all ease-in-out;
+
+	&:hover {
+		cursor: col-resize;
+		background-color: var(--secondary-accent-color);
+		border-radius: 5px;
+		padding: 2px;
+	}
+}

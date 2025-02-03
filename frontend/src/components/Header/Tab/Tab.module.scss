@@ -1,0 +1,46 @@
+@use '../../../variables.scss' as vars;
+
+.tab-container {
+	border: 2px, var(--accent-color) solid;
+	display: flex;
+	// justify-content: space-between;
+	align-items: center;
+	padding-inline: 10px;
+	border-radius: 12px;
+	gap: var(--standart-text-size);
+	font-size: var(--standart-text-size);
+	color: var(--accent-color);
+	transition: 0.3s all ease-out;
+
+	p {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		max-width: 130px;
+		margin: 0;
+		pointer-events: none;
+	}
+
+	&.active {
+		background-color: var(--accent-color);
+		color: var(--secondary-main-color);
+	}
+
+	svg {
+		font-size: var(--small-text-size);
+		transition: 0.3s all ease-out;
+		padding: 2px;
+		border-radius: 50%;
+	}
+	svg:hover {
+		cursor: pointer;
+		background-color: var(--main-color);
+		color: var(--accent-color);
+	}
+}
+
+.tab-container:hover {
+	cursor: pointer;
+	background-color: var(--secondary-accent-color);
+	color: var(--main-color);
+	border-color: var(--secondary-accent-color);
+}

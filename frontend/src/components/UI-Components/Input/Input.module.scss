@@ -1,0 +1,33 @@
+@use '../../../variables.scss' as vars;
+
+.input-container {
+	button {
+		padding: 5px;
+		border-radius: 0px;
+		border: none;
+		border-radius: 0px 5px 5px 0px;
+		color: var(--main-color);
+		background-color: var(--accent-color);
+		transition: 0.25s ease-in;
+		&:hover {
+			background-color: var(--secondary-accent-color);
+		}
+	}
+
+	input {
+		border-radius: 5px 0px 0px 5px;
+		padding: 5px;
+		background-color: var(--main-color);
+		color: var(--accent-color);
+		&,
+		&:hover,
+		&:focus {
+			border: none;
+			box-shadow: none;
+		}
+	}
+}
+
+.input-form {
+	display: flex;
+}

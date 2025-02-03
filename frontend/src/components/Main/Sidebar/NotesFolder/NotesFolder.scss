@@ -1,0 +1,71 @@
+@use '../../../../variables.scss' as vars;
+
+.folder-container {
+	background-color: var(--accent-color);
+	color: var(--main-color);
+	display: flex;
+	flex-direction: column;
+	font-size: var(--standart-text-size);
+	font-weight: 500;
+	margin: 15px;
+	border-radius: 15px;
+	padding: 5px;
+	transition: 0.15s all ease;
+
+	h3 {
+		margin: 0;
+	}
+}
+
+.folder-container__header {
+	width: 100%;
+	transition: 0.1s all ease-in;
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	border-radius: 8px;
+	svg {
+		padding: 0;
+		margin: 0;
+		font-size: var(--standart-text-size);
+	}
+}
+
+.folder-container__header:hover {
+	background-color: var(--secondary-accent-color);
+	cursor: pointer;
+}
+
+.header__title {
+	display: flex;
+	width: 100%;
+	justify-content: center;
+	align-items: center;
+	gap: 5px;
+	// justify-self: center;
+	align-self: center;
+}
+
+.folder-arrow {
+	font-size: var(--standart-text-size);
+	transition: 0.22s all ease-in;
+	&--open {
+		transition: 0.22s all ease-in;
+		transform: rotate(90deg);
+	}
+}
+
+.folder-content {
+	max-height: 0;
+	overflow: hidden;
+	transition: 0.15s all ease-in-out;
+	display: flex;
+	flex-direction: column;
+	opacity: 0;
+	gap: 5px;
+	&--open {
+		opacity: 1;
+		padding-top: 10px;
+		max-height: 300px;
+	}
+}

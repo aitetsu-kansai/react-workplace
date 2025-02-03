@@ -1,0 +1,41 @@
+@use '../../../variables.scss' as vars;
+
+.filter-container {
+	padding-top: 15px;
+	transition: var(--theme-toggle-transition);
+}
+
+.filter-input {
+	margin: 15px;
+	transition: var(--theme-toggle-transition);
+
+	display: flex;
+	align-items: center;
+	background-color: var(--secondary-main-color);
+	border-radius: 10px;
+	padding-inline: 10px;
+	svg {
+		color: var(--accent-color);
+	}
+	input {
+		background-color: var(--secondary-main-color);
+		color: var(--accent-color);
+		transition: var(--theme-toggle-transition);
+
+		border-color: none;
+		box-shadow: none;
+		&:hover {
+			box-shadow: none;
+		}
+		&:focus {
+			box-shadow: none;
+		}
+	}
+
+	&:hover {
+		box-shadow: 0 0 0 0.1vw var(--secondary-accent-color);
+	}
+	&.focus {
+		box-shadow: 0 0 0 0.1vw var(--accent-color);
+	}
+}

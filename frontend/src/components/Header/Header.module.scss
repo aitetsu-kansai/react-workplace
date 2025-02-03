@@ -1,0 +1,10 @@
+.header {
+	display: grid;
+	grid-template-columns: var(--grid-column-template);
+	background-color: var(--main-color);
+	// height: 50px;
+	padding-block: 15px;
+	text-align: center;
+	border-bottom: 2px var(--accent-color) solid;
+	transition: var(--theme-toggle-transition);
+}
