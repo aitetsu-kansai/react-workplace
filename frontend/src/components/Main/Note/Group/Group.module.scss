@@ -49,20 +49,16 @@
 
 .group-tasks {
 	height: fit-content;
-	// max-height: 70vh;
 	overflow-y: auto;
 	background-color: var(--secondary-main-color);
 	border-radius: 12px;
 	max-height: 0;
+	overflow-x: hidden;
+
 	transition: 0.2s all ease;
-
-	// &--open {
-	// 	max-height: 70vh;
-	// }
-}
-
-.group-tasks--open {
-	max-height: 70vh;
+	&--open {
+		max-height: 70vh;
+	}
 }
 
 .task-arrow {

@@ -1,3 +1,4 @@
+import { useDroppable } from '@dnd-kit/core'
 import React, { useState } from 'react'
 import { IoIosArrowForward } from 'react-icons/io'
 import { MdDragIndicator } from 'react-icons/md'
@@ -7,6 +8,10 @@ import { generateId } from '../../../../utils/generateRandomId'
 import Input from '../../../UI-Components/Input/Input'
 import style from './Group.module.scss'
 function Group({ children, groupName, noteId, groupId }) {
+	const { setNodeRef } = useDroppable({
+		id: groupId,
+	})
+
 	const [taskName, setTaskName] = useState('')
 	const [taskIsOpen, setTaskIsOpen] = useState(true)
 	const dispatch = useDispatch()
@@ -29,7 +34,7 @@ function Group({ children, groupName, noteId, groupId }) {
 	}
 
 	return (
-		<div className={style['group-container']}>
+		<div className={style['group-container']} ref={setNodeRef}>
 			<div className={style['group-header']}>
 				<div className={style['group-header__title']}>
 					<MdDragIndicator />

@@ -8,6 +8,7 @@
 	--main-color: #121212;
 	--secondary-main-color: #222222;
 	--secondary-accent-color: #c9cac9;
+	---third-main-color: white;
 	--third-accent-color: rgb(180, 180, 180);
 	--accent-color: white;
 	--small-text-size: 12px;
@@ -19,6 +20,7 @@
 :root[data-theme='light'] {
 	--main-color: #e7e7e7;
 	--secondary-main-color: #cacaca;
+	---third-main-color: white;
 	--secondary-accent-color: #2b2b2b;
 	--third-accent-color: rgb(61, 61, 61);
 

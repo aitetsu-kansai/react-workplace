@@ -60,6 +60,15 @@ const notesSlice = createSlice({
 				state.tasks = state.tasks.filter(task => task.taskId !== taskId)
 			} else return
 		},
+
+		updateTaskGroup: (state, action) => {
+			console.log(action.payload)
+			const { newGroupId, taskId } = action.payload
+			const currentTask = state.tasks?.find(task => task.taskId === taskId)
+			if (currentTask) {
+				currentTask.groupId = newGroupId
+			}
+		},
 	},
 })
 
@@ -70,6 +79,7 @@ export const {
 	removeNote,
 	toggleTask,
 	deleteTask,
+	updateTaskGroup,
 } = notesSlice.actions
 export const selectNotes = state => state.notes.notes
 export const selectGroups = state => state.notes.groups

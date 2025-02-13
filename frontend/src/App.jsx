@@ -1,4 +1,3 @@
-import { DndContext } from '@dnd-kit/core'
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
@@ -22,14 +21,12 @@ function App() {
 		<BrowserRouter>
 			<Header />
 			<Info />
-			<DndContext>
-				<Routes>
-					<Route path='/' element={<Home />} />
-					<Route path='notes' element={<Main />}>
-						<Route path=':id' element={<Note />} />
-					</Route>
-				</Routes>
-			</DndContext>
+			<Routes>
+				<Route path='/' element={<Home />} />
+				<Route path='notes' element={<Main />}>
+					<Route path=':id' element={<Note />} />
+				</Route>
+			</Routes>
 		</BrowserRouter>
 	)
 }
