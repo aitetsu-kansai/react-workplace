@@ -1,6 +1,7 @@
 :root {
 	--theme-toggle-transition: 0.3s background-color ease-in-out,
 		0.3s color ease-in-out;
+	--grid-column-template: 0.15fr 1fr;
 }
 
 :root[data-theme='dark'] {
@@ -13,7 +14,6 @@
 	--standart-text-size: 16px;
 	--medium-text-size: 20px;
 	--large-text-size: 23px;
-	--grid-column-template: 0.15fr 1fr;
 }
 
 :root[data-theme='light'] {
@@ -27,5 +27,4 @@
 	--standart-text-size: 16px;
 	--medium-text-size: 20px;
 	--large-text-size: 23px;
-	--grid-column-template: 0.15fr 1fr;
 }

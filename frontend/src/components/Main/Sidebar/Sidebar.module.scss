@@ -6,15 +6,18 @@
 	max-width: 0;
 	opacity: 0;
 	overflow: hidden;
+	visibility: hidden;
+	// display: none;
 	transform: translateX(-100%);
-
 	transition: var(--theme-toggle-transition), 0.15s opacity ease-out,
-		0.25s max-width ease-out, 0.25s display ease, transform 0.25s ease-out;
+		0.15s max-width ease-out, 0.25s display ease, transform 0.25s ease-out;
 
 	&.show {
 		min-width: 200px;
 		max-width: 600px;
 		opacity: 1;
+		visibility: visible;
+
 		transform: translateX(0);
 	}
 	&.alert {

@@ -4,9 +4,8 @@ import './Dropdown.scss'
 
 function Dropdown({ children }) {
 	const [dropdownIsOpen, setDropdownIsOpen] = useState(false)
-	const [dropDownChanging, setDropdownChanging] = useState(false)
 	const dropdownRef = useRef(null)
-
+	const burgerRef = useRef(null)
 	const openDropdown = () => {
 		setDropdownIsOpen(true)
 	}
@@ -28,11 +27,15 @@ function Dropdown({ children }) {
 
 	return (
 		<div className='dropdown__container' ref={dropdownRef}>
-			<GiHamburgerMenu onClick={openDropdown} className='more-info__ico' />
+			<GiHamburgerMenu
+				onClick={openDropdown}
+				className='more-info__ico'
+				ref={burgerRef}
+			/>
 			<ul
 				className={`dropdown__list ${
-					dropdownIsOpen && 'dropdown__list--open'
-				} `}
+					dropdownIsOpen ? 'dropdown__list--open' : ''
+				}`}
 			>
 				{children}
 			</ul>

@@ -9,6 +9,8 @@
 		color: var(--main-color);
 		background-color: var(--accent-color);
 		transition: 0.25s ease-in;
+		&:hover,
+		&:active,
 		&:hover {
 			background-color: var(--secondary-accent-color);
 		}

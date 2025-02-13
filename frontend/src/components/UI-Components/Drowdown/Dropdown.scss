@@ -2,6 +2,7 @@
 
 .dropdown__container {
 	transition: 0.2s all ease-in;
+	z-index: 1;
 }
 
 .dropdown__list {
@@ -15,7 +16,6 @@
 	border-radius: 15px;
 	font-weight: 600;
 	margin: 0px;
-	z-index: 3;
 	font-size: 14px;
 	gap: 5px;
 	transition: 0.2s all ease-out;
@@ -23,8 +23,11 @@
 	opacity: 0;
 	top: 100%;
 	left: 0;
+	pointer-events: none;
 
 	&--open {
+		pointer-events: all;
+
 		opacity: 1;
 		max-height: 300px;
 	}

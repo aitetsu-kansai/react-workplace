@@ -1,3 +1,4 @@
+import { DndContext } from '@dnd-kit/core'
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
@@ -8,6 +9,7 @@ import Main from './components/Main/Main'
 import Note from './components/Main/Note/Note'
 import Info from './components/UI-Components/Info/Info'
 import { toggleTheme } from './redux/slices/uiSlice'
+
 function App() {
 	const dispatch = useDispatch()
 
@@ -20,12 +22,14 @@ function App() {
 		<BrowserRouter>
 			<Header />
 			<Info />
-			<Routes>
-				<Route path='/' element={<Home />} />
-				<Route path='notes' element={<Main />}>
-					<Route path=':id' element={<Note />} />
-				</Route>
-			</Routes>
+			<DndContext>
+				<Routes>
+					<Route path='/' element={<Home />} />
+					<Route path='notes' element={<Main />}>
+						<Route path=':id' element={<Note />} />
+					</Route>
+				</Routes>
+			</DndContext>
 		</BrowserRouter>
 	)
 }

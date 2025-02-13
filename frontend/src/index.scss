@@ -92,21 +92,26 @@ input[type='checkbox'] {
 	border-color: var(--secondary-main-color);
 }
 
-/* При наведении */
 input[type='checkbox']:hover {
 	background-color: var(--secondary-accent-color);
 	border-color: var(--secondary-main-color);
 }
 
-/* При активации */
 input[type='checkbox']:active {
 	background-color: var(--secondary-accent-color);
 }
 
-/* При отметке (галочка) */
+input[type='checkbox']:focus {
+	background-color: var(--secondary-main-color);
+}
+
 input[type='checkbox']:checked {
 	background-color: var(--secondary-accent-color);
 	border-color: var(--secondary-main-color);
+	&:focus {
+		background-color: var(--accent-color);
+		border-color: var(--secondary-accent-color);
+	}
 }
 
 input[type='checkbox']:checked::before {

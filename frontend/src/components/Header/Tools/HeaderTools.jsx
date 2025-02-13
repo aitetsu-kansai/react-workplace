@@ -1,35 +1,55 @@
 import { useEffect, useState } from 'react'
+import { BiSolidBookBookmark } from 'react-icons/bi'
 import { GoHomeFill } from 'react-icons/go'
 import { IoIosBookmarks } from 'react-icons/io'
 import { RiSidebarFoldFill, RiStickyNoteAddFill } from 'react-icons/ri'
-import { useDispatch, useSelector } from 'react-redux'
+import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { Link, useLocation } from 'react-router-dom'
-
-import { BiSolidBookBookmark } from 'react-icons/bi'
 import { setInfo } from '../../../redux/slices/infoSlice.js'
 import { addNote, selectNotes } from '../../../redux/slices/notesSlice.js'
 import {
 	selectActiveTab,
-	toggleSidebar,
+	selectSidebebarVisibleState,
+	setAllTabsInactive,
+	setSidebarShow,
 } from '../../../redux/slices/uiSlice.js'
 import { generateId } from '../../../utils/generateRandomId.js'
-import Dropdown from '../../UI-Components/Drowdown/Dropdown.jsx'
+import Dropdown from '../../UI-Components/Drowdown/Dropdown'
 import InputLabel from '../../UI-Components/Label/InputLabel.jsx'
 import Modal from '../../UI-Components/Modal/Modal.jsx'
 
 import style from './HeaderTools.module.scss'
 import ThemeSwitcher from './ThemeSwitcher/ThemeSwitcher.jsx'
+
 function Tools() {
 	const location = useLocation()
 	const dispatch = useDispatch()
-	const notes = useSelector(selectNotes)
+	const notes = useSelector(selectNotes, shallowEqual)
 	const activeTab = useSelector(selectActiveTab)
-	const handleOnSubmit = e => {
-		const noteId = generateId()
+	const sidebarVisibleState = useSelector(selectSidebebarVisibleState)
+	const sidebarPath = location.pathname.includes('/notes/')
+		? location.pathname
+		: '/notes'
 
+	const handleOnSubmit = e => {
 		e.preventDefault()
 
-		const isDublicate = notes.some(note => noteName === note.name)
+		const trimmedName = noteName.trim()
+
+		if (!trimmedName) {
+			dispatch(
+				setInfo({
+					infoCategory: 'error',
+					infoMessage: 'Note name cannot be empty',
+				})
+			)
+			return
+		}
+
+		const isDublicate = notes.some(
+			note => trimmedName === note.name.trim().toLowerCase()
+		)
+
 		if (isDublicate) {
 			dispatch(
 				setInfo({ infoMessage: 'The note with this name is already created' })
@@ -37,7 +57,7 @@ function Tools() {
 			return
 		}
 
-		dispatch(addNote({ id: noteId, name: noteName }))
+		dispatch(addNote({ id: generateId(), name: trimmedName }))
 
 		setNoteName('')
 		setInputIsShow(false)
@@ -45,7 +65,12 @@ function Tools() {
 
 	console.log(activeTab)
 
-	const handleToggleSidebar = () => dispatch(toggleSidebar())
+	const handleToggleSidebar = () => {
+		const isNotesPage = location.pathname.startsWith('/notes')
+		const isShow = isNotesPage ? !sidebarVisibleState : true
+
+		dispatch(setSidebarShow(isShow))
+	}
 
 	const [inputIsShow, setInputIsShow] = useState(false)
 	const [width, setWidth] = useState(window.innerWidth)
@@ -59,10 +84,15 @@ function Tools() {
 
 	const toolsContent = (
 		<>
-			<Link to='/' title='Home page'>
+			<Link
+				to='/'
+				title='Home page'
+				aria-label='Home Page'
+				onClick={() => dispatch(setAllTabsInactive())}
+			>
 				<GoHomeFill className={location.pathname === '/' && style['active']} />
 			</Link>
-			<Link to={`/notes/${activeTab?.id}`} title='Notes'>
+			<Link to={`/notes${activeTab ? '/' + activeTab?.id : ''}`} title='Notes'>
 				{location.pathname.includes('/notes') ? (
 					<IoIosBookmarks className={style['active']} />
 				) : (
@@ -73,10 +103,9 @@ function Tools() {
 				onClick={() => setInputIsShow(true)}
 				title='Create a new note'
 			/>
-			<RiSidebarFoldFill
-				onClick={handleToggleSidebar}
-				title='Hide/Show a sidebar'
-			/>
+			<Link to={sidebarPath} onClick={handleToggleSidebar}>
+				<RiSidebarFoldFill title='Hide/Show a sidebar' />
+			</Link>
 			<ThemeSwitcher />
 		</>
 	)

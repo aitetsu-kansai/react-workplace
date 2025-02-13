@@ -15,6 +15,10 @@ const uiSlice = createSlice({
 			state.isSidebarVisible = !state.isSidebarVisible
 		},
 
+		setSidebarShow: (state, action) => {
+			state.isSidebarVisible = action.payload
+		},
+
 		toggleTab: (state, action) => {
 			const { id, type = 'toggle' } = action.payload
 			const curTab = state.tabs.find(tab => tab.id === id)
@@ -38,6 +42,10 @@ const uiSlice = createSlice({
 			const curTab = state.tabs.find(tab => tab.id === action.payload)
 			state.tabs.forEach(tab => (tab.isActive = false))
 			curTab.isActive = true
+		},
+
+		setAllTabsInactive: state => {
+			state.tabs.forEach(tab => (tab.isActive = false))
 		},
 
 		toggleTheme: (state, action) => {
@@ -65,8 +73,14 @@ const uiSlice = createSlice({
 	},
 })
 
-export const { toggleSidebar, toggleTab, setTabIsActive, toggleTheme } =
-	uiSlice.actions
+export const {
+	toggleSidebar,
+	toggleTab,
+	setTabIsActive,
+	toggleTheme,
+	setSidebarShow,
+	setAllTabsInactive,
+} = uiSlice.actions
 
 export const selectSidebebarVisibleState = state => state.ui.isSidebarVisible
 export const selectTabs = state => state.ui.tabs
