@@ -1,5 +1,5 @@
 import { useDroppable } from '@dnd-kit/core'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { IoIosArrowForward } from 'react-icons/io'
 import { MdDragIndicator } from 'react-icons/md'
 import { useDispatch } from 'react-redux'
@@ -8,9 +8,11 @@ import { generateId } from '../../../../utils/generateRandomId'
 import Input from '../../../UI-Components/Input/Input'
 import style from './Group.module.scss'
 function Group({ children, groupName, noteId, groupId }) {
-	const { setNodeRef } = useDroppable({
+	const { setNodeRef, isOver } = useDroppable({
 		id: groupId,
 	})
+
+	const tasksRef = useRef(null)
 
 	const [taskName, setTaskName] = useState('')
 	const [taskIsOpen, setTaskIsOpen] = useState(true)
@@ -34,7 +36,7 @@ function Group({ children, groupName, noteId, groupId }) {
 	}
 
 	return (
-		<div className={style['group-container']} ref={setNodeRef}>
+		<div className={`${style['group-container']}`} ref={setNodeRef}>
 			<div className={style['group-header']}>
 				<div className={style['group-header__title']}>
 					<MdDragIndicator />
@@ -58,8 +60,16 @@ function Group({ children, groupName, noteId, groupId }) {
 				className={`${style['group-tasks']} ${
 					taskIsOpen ? style['group-tasks--open'] : ''
 				}`}
+				style={{
+					minHeight: isOver
+						? `calc(${tasksRef.current?.scrollHeight}px + 30px)`
+						: 'auto',
+					transition: '0.2s all ease',
+					// backgroundColor: 'red',
+				}}
+				ref={tasksRef}
 			>
-				{children}
+				<div>{children}</div>
 			</div>
 		</div>
 	)

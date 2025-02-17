@@ -1,13 +1,15 @@
 import { useDraggable } from '@dnd-kit/core'
+import { CSS } from '@dnd-kit/utilities'
 import { RxCross1 } from 'react-icons/rx'
 import { useDispatch } from 'react-redux'
 import { deleteTask, toggleTask } from '../../../../redux/slices/notesSlice'
 import style from './Task.module.scss'
 
-function Task({ status, taskId, taskName }) {
-	const { attributes, listeners, setNodeRef, transform } = useDraggable({
-		id: taskId,
-	})
+function Task({ task, index }) {
+	const { attributes, listeners, setNodeRef, transform, isDragging } =
+		useDraggable({
+			id: task.taskId,
+		})
 
 	const dispatch = useDispatch()
 
@@ -23,16 +25,22 @@ function Task({ status, taskId, taskName }) {
 		dispatch(deleteTask(taskId))
 	}
 
-	const newStyle = transform
-		? { transform: `translate(${transform.x}px, ${transform.y}px)` }
-		: undefined
+	const newStyle = transform && {
+		position: 'absolute',
+		width: transform && `95%`,
+		margin: '5px 0',
+		zIndex: 1000,
+		transform: CSS.Translate.toString(transform),
+		backroundColor: isDragging && 'red',
+		transition: 'opacity 0.2s',
+	}
 
 	return (
 		<div
 			className={`${style['group-task']} ${
-				status && style['group-task--done']
+				task.status && style['group-task--done']
 			}`}
-			key={taskId}
+			key={task.taskId}
 			ref={setNodeRef}
 			{...listeners}
 			{...attributes}
@@ -40,12 +48,18 @@ function Task({ status, taskId, taskName }) {
 		>
 			<label
 				className='custom-checkbox'
-				onMouseUp={e => handleToggleTask(e, taskId)}
+				onMouseDown={e => e.stopPropagation()}
+				onClick={e => handleToggleTask(e, task.taskId)}
+				data-no-drag='true'
 			>
-				<input type='checkbox' checked={status} readOnly />
+				<input type='checkbox' checked={task.status} readOnly />
 			</label>
-			<p> {taskName}</p>
-			<RxCross1 onMouseUp={e => handleDeleteTask(e, taskId)} />
+			<p> {task.taskName}</p>
+			<RxCross1
+				onMouseDown={e => e.stopPropagation()}
+				onClick={e => handleDeleteTask(e, task.taskId)}
+				data-no-drag='true'
+			/>
 		</div>
 	)
 }

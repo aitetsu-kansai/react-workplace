@@ -1,5 +1,5 @@
-import { DndContext } from '@dnd-kit/core'
-import { useState } from 'react'
+import { closestCenter, DndContext } from '@dnd-kit/core'
+import { useCallback, useState } from 'react'
 
 import { PiColumnsPlusLeftFill } from 'react-icons/pi'
 import { useDispatch, useSelector } from 'react-redux'
@@ -45,18 +45,32 @@ function Note() {
 			setInputIsShow(!inputIsShow)
 		}
 	}
-	const handleDragEnd = event => {
-		const { active, over } = event
-		if (!over) return
-		const taskId = active.id
-		const newGroupId = over.id
-		console.log(taskId)
-		console.log(newGroupId)
-		dispatch(updateTaskGroup({ newGroupId, taskId }))
-	}
+
+	const handleDragEnd = useCallback(
+		event => {
+			const { active, over } = event
+			if (!over) return
+			const taskId = active.id
+			const newGroupId = over.id
+			if (active.data.current?.groupId !== newGroupId) {
+				dispatch(
+					updateTaskGroup({
+						newGroupId,
+						taskId,
+					})
+				)
+			}
+			dispatch(updateTaskGroup({ newGroupId, taskId }))
+		},
+		[dispatch]
+	)
 
 	return (
-		<DndContext onDragEnd={handleDragEnd}>
+		<DndContext
+			onDragEnd={handleDragEnd}
+			autoScroll={false}
+			collisionDetection={closestCenter}
+		>
 			<div className={style['note-container']}>
 				<div className={style['note__header']}>
 					<h2>{curNote?.name}</h2>
@@ -82,14 +96,8 @@ function Note() {
 							>
 								{tasks
 									.filter(task => task.groupId === group.groupId)
-									.map(task => {
-										return (
-											<Task
-												status={task.status}
-												taskId={task.taskId}
-												taskName={task.taskName}
-											/>
-										)
+									.map((task, index) => {
+										return <Task key={task.taskId} task={task} index={index} />
 									})}
 							</Group>
 						)
