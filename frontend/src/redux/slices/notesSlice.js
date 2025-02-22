@@ -1,3 +1,4 @@
+import { arrayMove } from '@dnd-kit/sortable'
 import { createSelector, createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
@@ -24,13 +25,21 @@ const notesSlice = createSlice({
 		},
 		//Groups
 		addGroup: (state, action) => {
-			const { noteId, groupName, groupId } = action.payload
+			const { noteId, groupName, groupId, order } = action.payload
 			const currentNote = state.notes.find(note => note.id === noteId)
 			if (currentNote) {
-				state.groups.push({ noteId: currentNote.id, groupName, groupId })
+				state.groups.push({ noteId: currentNote.id, groupName, groupId, order })
 			}
 		},
+		updateGroupOrder: (state, action) => {
+			const { oldIndex, newIndex } = action.payload
 
+			state.groups = arrayMove(state.groups, oldIndex, newIndex)
+			state.groups = state.groups.map((group, index) => ({
+				...group,
+				order: index,
+			}))
+		},
 		//Tasks
 		addTask: (state, action) => {
 			const {
@@ -79,6 +88,7 @@ export const {
 	toggleTask,
 	deleteTask,
 	updateTaskGroup,
+	updateGroupOrder,
 } = notesSlice.actions
 export const selectNotes = state => state.notes.notes
 export const selectGroups = state => state.notes.groups

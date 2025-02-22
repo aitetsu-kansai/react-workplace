@@ -1,16 +1,28 @@
-import { useDroppable } from '@dnd-kit/core'
+// import { useDroppable } from '@dnd-kit/core'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import React, { useRef, useState } from 'react'
 import { IoIosArrowForward } from 'react-icons/io'
 import { MdDragIndicator } from 'react-icons/md'
 import { useDispatch } from 'react-redux'
+import style from './Group.module.scss'
+
 import { addTask } from '../../../../redux/slices/notesSlice'
 import { generateId } from '../../../../utils/generateRandomId'
 import Input from '../../../UI-Components/Input/Input'
-import style from './Group.module.scss'
-function Group({ children, groupName, noteId, groupId }) {
-	const { setNodeRef, isOver } = useDroppable({
-		id: groupId,
-	})
+function Group({ children, groupName, noteId, groupId, id }) {
+	const { isOver, attributes, listeners, setNodeRef, transform, transition } =
+		useSortable({
+			id: groupId,
+			data: {
+				type: 'group',
+			},
+		})
+
+	const newStyle = {
+		transform: CSS.Transform.toString(transform),
+		transition,
+	}
 
 	const tasksRef = useRef(null)
 
@@ -36,10 +48,14 @@ function Group({ children, groupName, noteId, groupId }) {
 	}
 
 	return (
-		<div className={`${style['group-container']}`} ref={setNodeRef}>
+		<div
+			className={`${style['group-container']}`}
+			ref={setNodeRef}
+			style={newStyle}
+		>
 			<div className={style['group-header']}>
 				<div className={style['group-header__title']}>
-					<MdDragIndicator />
+					<MdDragIndicator {...attributes} {...listeners} />
 					<IoIosArrowForward
 						onClick={handleHideTask}
 						className={`${style['task-arrow']} ${
