@@ -1,4 +1,4 @@
-import { closestCenter, DndContext } from '@dnd-kit/core'
+import { closestCenter, DndContext, DragOverlay } from '@dnd-kit/core'
 import { useCallback, useState } from 'react'
 
 import { PiColumnsPlusLeftFill } from 'react-icons/pi'
@@ -46,6 +46,7 @@ function Note() {
 		}
 	}
 
+	const [activeTask, setActiveTask] = useState(null)
 	const handleDragEnd = useCallback(
 		event => {
 			const { active, over } = event
@@ -53,6 +54,7 @@ function Note() {
 			const taskId = active.id
 			const newGroupId = over.id
 			if (active.data.current?.groupId !== newGroupId) {
+				setActiveTask(null)
 				dispatch(
 					updateTaskGroup({
 						newGroupId,
@@ -60,16 +62,21 @@ function Note() {
 					})
 				)
 			}
-			dispatch(updateTaskGroup({ newGroupId, taskId }))
 		},
 		[dispatch]
 	)
+
+	const handleDragStart = event => {
+		const { active, over } = event
+		setActiveTask({ ...active.data.current.task })
+	}
 
 	return (
 		<DndContext
 			onDragEnd={handleDragEnd}
 			autoScroll={false}
 			collisionDetection={closestCenter}
+			onDragStart={handleDragStart}
 		>
 			<div className={style['note-container']}>
 				<div className={style['note__header']}>
@@ -103,6 +110,10 @@ function Note() {
 						)
 					})}
 				</div>
+				<DragOverlay>
+					{' '}
+					{activeTask && <Task task={activeTask} isOverlay={true} />}
+				</DragOverlay>
 				<div>
 					<Modal active={inputIsShow} setActive={setInputIsShow}>
 						{inputIsShow && (

@@ -1,6 +1,7 @@
 .group-task {
 	display: flex;
 	box-sizing: border-box;
+	transition: 0.3s all ease;
 
 	border: 1px var(--secondary-accent-color) solid;
 	background-color: var(--accent-color);
@@ -23,31 +24,19 @@
 		border: 1px var(--secondary-accent-color) solid;
 	}
 
-	&:active:not(:has(input:active)) {
-		margin: 10px 3px;
-		cursor: grabbing;
-		background-color: var(--secondary-main-color);
-		color: var(--accent-color);
-		border: 3px var(--accent-color) solid;
-		input[type='checkbox'] {
-			border-color: var(--secondary-accent-color);
-		}
-	}
 	p {
+		transition: 0.3s all ease;
 		user-select: contain;
 		cursor: default;
 		word-wrap: break-word;
 		margin: 0;
 		padding: 5px;
 		padding-inline: 10px;
-		max-width: 70%;
+		// max-width: 70%;
 		overflow-wrap: break-word;
 		word-break: break-word;
 		padding-inline: 10px;
 		flex: 1;
-		&:active {
-			cursor: grabbing;
-		}
 	}
 
 	input {

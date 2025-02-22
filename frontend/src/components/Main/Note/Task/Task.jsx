@@ -5,10 +5,11 @@ import { useDispatch } from 'react-redux'
 import { deleteTask, toggleTask } from '../../../../redux/slices/notesSlice'
 import style from './Task.module.scss'
 
-function Task({ task, index }) {
+function Task({ task, index, isOverlay = false }) {
 	const { attributes, listeners, setNodeRef, transform, isDragging } =
 		useDraggable({
 			id: task.taskId,
+			data: { task },
 		})
 
 	const dispatch = useDispatch()
@@ -26,25 +27,19 @@ function Task({ task, index }) {
 	}
 
 	const newStyle = transform && {
-		position: 'absolute',
-		width: transform && `95%`,
-		margin: '5px 0',
-		zIndex: 1000,
+		margin: 0,
 		transform: CSS.Translate.toString(transform),
-		backroundColor: isDragging && 'red',
-		transition: 'opacity 0.2s',
+		opacity: isOverlay ? 1 : 0,
+		width: `100%`,
 	}
-
 	return (
 		<div
 			className={`${style['group-task']} ${
 				task.status && style['group-task--done']
 			}`}
 			key={task.taskId}
-			ref={setNodeRef}
-			{...listeners}
-			{...attributes}
 			style={newStyle}
+			ref={setNodeRef}
 		>
 			<label
 				className='custom-checkbox'
@@ -54,7 +49,10 @@ function Task({ task, index }) {
 			>
 				<input type='checkbox' checked={task.status} readOnly />
 			</label>
-			<p> {task.taskName}</p>
+			<p {...listeners} {...attributes}>
+				{' '}
+				{task.taskName}
+			</p>
 			<RxCross1
 				onMouseDown={e => e.stopPropagation()}
 				onClick={e => handleDeleteTask(e, task.taskId)}

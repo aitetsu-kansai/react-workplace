@@ -62,7 +62,6 @@ const notesSlice = createSlice({
 		},
 
 		updateTaskGroup: (state, action) => {
-			console.log(action.payload)
 			const { newGroupId, taskId } = action.payload
 			const currentTask = state.tasks?.find(task => task.taskId === taskId)
 			if (currentTask) {

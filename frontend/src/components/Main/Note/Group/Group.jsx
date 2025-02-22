@@ -65,7 +65,6 @@ function Group({ children, groupName, noteId, groupId }) {
 						? `calc(${tasksRef.current?.scrollHeight}px + 30px)`
 						: 'auto',
 					transition: '0.2s all ease',
-					// backgroundColor: 'red',
 				}}
 				ref={tasksRef}
 			>
