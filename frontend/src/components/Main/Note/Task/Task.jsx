@@ -4,7 +4,7 @@ import { RxCross1 } from 'react-icons/rx'
 import { useDispatch } from 'react-redux'
 import { deleteTask, toggleTask } from '../../../../redux/slices/notesSlice'
 import style from './Task.module.scss'
-import { useSortable } from '@dnd-kit/sortable'
+// import { useSortable } from '@dnd-kit/sortable'
 
 function Task({ task, index, isOverlay = false }) {
 	const { attributes, listeners, setNodeRef, transform, isDragging } =
@@ -31,6 +31,7 @@ function Task({ task, index, isOverlay = false }) {
 		margin: 0,
 		transform: CSS.Translate.toString(transform),
 		opacity: isOverlay ? 1 : 0,
+		position: 'relative',
 		width: `100%`,
 	}
 	return (

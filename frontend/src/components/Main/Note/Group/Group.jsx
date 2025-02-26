@@ -1,6 +1,5 @@
 // import { useDroppable } from '@dnd-kit/core'
 import { useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
 import React, { useRef, useState } from 'react'
 import { IoIosArrowForward } from 'react-icons/io'
 import { MdDragIndicator } from 'react-icons/md'
@@ -11,17 +10,24 @@ import { addTask } from '../../../../redux/slices/notesSlice'
 import { generateId } from '../../../../utils/generateRandomId'
 import Input from '../../../UI-Components/Input/Input'
 function Group({ children, groupName, noteId, groupId, id }) {
-	const { isOver, attributes, listeners, setNodeRef, transform, transition } =
-		useSortable({
-			id: groupId,
-			data: {
-				type: 'group',
-			},
-		})
+	const {
+		isOver,
+		attributes,
+		listeners,
+		setNodeRef,
+		transform,
+		transition,
+		isDragging,
+	} = useSortable({
+		id: groupId,
+		data: {
+			type: 'group',
+		},
+	})
 
 	const newStyle = {
-		transform: CSS.Transform.toString(transform),
 		transition,
+		transform: transform && `translate(${transform.x}px, ${transform.y}px)`,
 	}
 
 	const tasksRef = useRef(null)
@@ -53,7 +59,11 @@ function Group({ children, groupName, noteId, groupId, id }) {
 			ref={setNodeRef}
 			style={newStyle}
 		>
-			<div className={style['group-header']}>
+			<div
+				className={`${style['group-header']} ${
+					isOver ? style['group-header--dragging'] : ''
+				}`}
+			>
 				<div className={style['group-header__title']}>
 					<MdDragIndicator {...attributes} {...listeners} />
 					<IoIosArrowForward
@@ -77,9 +87,6 @@ function Group({ children, groupName, noteId, groupId, id }) {
 					taskIsOpen ? style['group-tasks--open'] : ''
 				}`}
 				style={{
-					minHeight: isOver
-						? `calc(${tasksRef.current?.scrollHeight}px + 30px)`
-						: 'auto',
 					transition: '0.2s all ease',
 				}}
 				ref={tasksRef}

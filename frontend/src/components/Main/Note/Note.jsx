@@ -1,5 +1,6 @@
 import {
 	closestCenter,
+	closestCorners,
 	DndContext,
 	DragOverlay,
 	KeyboardSensor,

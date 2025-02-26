@@ -2,11 +2,9 @@
 	background-color: var(--secondary-main-color);
 	border-radius: 12px;
 	width: 270px;
-	border: 1px black;
 	height: fit-content;
-	max-height: 70vh;
 	position: relative;
-
+	overflow-y: auto;
 	.group-header {
 		display: flex;
 		flex-direction: column;
@@ -17,10 +15,26 @@
 		h4 {
 			margin: 0;
 		}
+
+		&--dragging {
+			background-color: var(--accent-color);
+			color: red;
+			transition: 0.22s all ease-in;
+
+			.group-header__title,
+			svg {
+				color: var(--main-color);
+			}
+		}
+
+		&--over {
+			background-color: red;
+		}
 	}
 }
 
 .group-header__title {
+	transition: 0.22s all ease-in;
 	color: var(--accent-color);
 	display: flex;
 	align-items: center;
@@ -48,22 +62,15 @@
 
 .group-tasks {
 	height: fit-content;
-	overflow-y: auto;
+
 	background-color: var(--secondary-main-color);
 	border-radius: 12px;
-	overflow-x: hidden;
-	transition: 0.2s all ease;
-	display: grid;
-	grid-template-rows: 0fr;
-
+	transition: 0.3s all ease-in;
+	max-height: 0;
+	overflow: hidden;
 	&--open {
 		max-height: 70vh;
-		grid-template-rows: 1fr;
-		transition: grid-template-rows 0.5s ease-out;
-	}
-
-	& > div {
-		overflow: hidden;
+		overflow-y: auto;
 	}
 }
 
