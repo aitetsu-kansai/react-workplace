@@ -1,6 +1,5 @@
 import {
 	closestCenter,
-	closestCorners,
 	DndContext,
 	DragOverlay,
 	KeyboardSensor,
@@ -63,25 +62,6 @@ function Note() {
 	}
 
 	const [activeTask, setActiveTask] = useState(null)
-	// const handleDragEnd = useCallback(
-	// 	event => {
-	// 		const { active, over } = event
-	// 		if (!over) return
-	// 		console.log(active)
-	// 		const taskId = active.id
-	// 		const newGroupId = over.id
-	// 		if (active.data.current?.groupId !== newGroupId) {
-	// 			setActiveTask(null)
-	// 			dispatch(
-	// 				updateTaskGroup({
-	// 					newGroupId,
-	// 					taskId,
-	// 				})
-	// 			)
-	// 		}
-	// 	},
-	// 	[dispatch]
-	// )
 
 	const sensors = useSensors(
 		useSensor(PointerSensor),
@@ -91,7 +71,7 @@ function Note() {
 	)
 
 	const handleDragStart = event => {
-		const { active, over } = event
+		const { active } = event
 
 		if (active.data.current?.type === 'task') {
 			setActiveTask({ ...active.data.current.task })
@@ -105,7 +85,6 @@ function Note() {
 			if (active.data.current.type === 'task') {
 				const taskId = active.id
 				const newGroupId = over.id
-				console.log(newGroupId)
 
 				if (active.data.current?.task.groupId !== newGroupId) {
 					setActiveTask(null)
@@ -121,7 +100,6 @@ function Note() {
 			if (active.data.current.type === 'group') {
 				const oldIndex = active.data.current?.sortable.index
 				const newIndex = over.data.current?.sortable.index
-				console.log(newIndex)
 				if (active.id !== over.id) {
 					dispatch(
 						updateGroupOrder({
@@ -162,7 +140,7 @@ function Note() {
 						items={groupsById.map(group => group.groupId)}
 						strategy={horizontalListSortingStrategy}
 					>
-						{groupsById.map((group, index) => {
+						{groupsById.map(group => {
 							return (
 								<Group
 									groupName={group.groupName}
@@ -173,9 +151,9 @@ function Note() {
 								>
 									{tasks
 										.filter(task => task.groupId === group.groupId)
-										.map((task, index) => {
+										.map(task => {
 											return (
-												<Task key={task.taskId} task={task} index={index} />
+												<Task key={task.taskId} task={task} id={task.order} />
 											)
 										})}
 								</Group>

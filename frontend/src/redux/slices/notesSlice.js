@@ -40,6 +40,16 @@ const notesSlice = createSlice({
 				order: index,
 			}))
 		},
+
+		deleteGroup: (state, action) => {
+			const groupToRemoveId = action.payload
+			state.groups = state.groups.filter(
+				group => group.groupId !== groupToRemoveId
+			)
+			state.tasks = state.tasks.filter(
+				tasks => tasks.groupId !== groupToRemoveId
+			)
+		},
 		//Tasks
 		addTask: (state, action) => {
 			const {
@@ -47,11 +57,12 @@ const notesSlice = createSlice({
 				noteId,
 				taskId,
 				taskName,
+				order,
 				status = false,
 			} = action.payload
 			const currentGroup = state.groups?.find(group => group.noteId === noteId)
 			if (currentGroup) {
-				state.tasks.push({ groupId, noteId, taskId, taskName, status })
+				state.tasks.push({ groupId, noteId, taskId, taskName, status, order })
 			} else return
 		},
 		toggleTask: (state, action) => {
@@ -89,6 +100,7 @@ export const {
 	deleteTask,
 	updateTaskGroup,
 	updateGroupOrder,
+	deleteGroup
 } = notesSlice.actions
 export const selectNotes = state => state.notes.notes
 export const selectGroups = state => state.notes.groups
@@ -102,6 +114,11 @@ export const selectGroupsById = createSelector(
 export const selectTasksById = createSelector(
 	[state => state.notes.tasks, (state, id) => id],
 	(tasks, noteId) => tasks.filter(task => task.noteId === noteId)
+)
+
+export const selectTasksByGroupId = createSelector(
+	[state => state.notes.tasks, (state, id) => id],
+	(tasks, groupId) => tasks.filter(task => task.groupId === groupId)
 )
 
 export default notesSlice.reducer

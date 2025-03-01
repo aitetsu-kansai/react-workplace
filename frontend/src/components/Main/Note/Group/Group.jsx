@@ -3,27 +3,28 @@ import { useSortable } from '@dnd-kit/sortable'
 import React, { useRef, useState } from 'react'
 import { IoIosArrowForward } from 'react-icons/io'
 import { MdDragIndicator } from 'react-icons/md'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import style from './Group.module.scss'
 
-import { addTask } from '../../../../redux/slices/notesSlice'
+import { RxCross1 } from 'react-icons/rx'
+import { useParams } from 'react-router-dom'
+import {
+	addTask,
+	deleteGroup,
+	selectTasksByGroupId,
+} from '../../../../redux/slices/notesSlice'
 import { generateId } from '../../../../utils/generateRandomId'
 import Input from '../../../UI-Components/Input/Input'
-function Group({ children, groupName, noteId, groupId, id }) {
-	const {
-		isOver,
-		attributes,
-		listeners,
-		setNodeRef,
-		transform,
-		transition,
-		isDragging,
-	} = useSortable({
-		id: groupId,
-		data: {
-			type: 'group',
-		},
-	})
+function Group({ children, groupName, noteId, groupId }) {
+	const tasks = useSelector(state => selectTasksByGroupId(state, groupId))
+
+	const { isOver, attributes, listeners, setNodeRef, transform, transition } =
+		useSortable({
+			id: groupId,
+			data: {
+				type: 'group',
+			},
+		})
 
 	const newStyle = {
 		transition,
@@ -31,6 +32,10 @@ function Group({ children, groupName, noteId, groupId, id }) {
 	}
 
 	const tasksRef = useRef(null)
+
+	const handleDeleteGroup = groupId => {
+		dispatch(deleteGroup(groupId))
+	}
 
 	const [taskName, setTaskName] = useState('')
 	const [taskIsOpen, setTaskIsOpen] = useState(true)
@@ -45,9 +50,12 @@ function Group({ children, groupName, noteId, groupId, id }) {
 
 	const handleOnSubmit = e => {
 		e.preventDefault()
+
 		const taskId = generateId()
 		if (taskName) {
-			dispatch(addTask({ noteId, groupId, taskId, taskName }))
+			dispatch(
+				addTask({ noteId, groupId, taskId, taskName, order: tasks.length })
+			)
 			setTaskName('')
 			console.log({ noteId, groupId, taskName })
 		}
@@ -65,14 +73,24 @@ function Group({ children, groupName, noteId, groupId, id }) {
 				}`}
 			>
 				<div className={style['group-header__title']}>
-					<MdDragIndicator {...attributes} {...listeners} />
+					<MdDragIndicator
+						{...attributes}
+						{...listeners}
+						title='Drag the group'
+					/>
 					<IoIosArrowForward
+						title='Hide/Show the group tasks'
 						onClick={handleHideTask}
 						className={`${style['task-arrow']} ${
 							taskIsOpen ? style['task-arrow--open'] : ''
 						}`}
 					/>
 					<h4>{groupName}</h4>
+					<RxCross1
+						className={style['task-cross']}
+						title='Delete the group'
+						onClick={() => handleDeleteGroup(groupId)}
+					/>
 				</div>
 				<Input
 					placeholder={'Task name'}

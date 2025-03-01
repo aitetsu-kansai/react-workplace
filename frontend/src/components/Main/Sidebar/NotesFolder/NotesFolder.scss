@@ -56,16 +56,16 @@
 }
 
 .folder-content {
-	max-height: 0;
-	overflow: hidden;
 	transition: 0.15s all ease-in-out;
-	display: flex;
-	flex-direction: column;
-	opacity: 0;
-	gap: 5px;
+	display: grid;
+	grid-template-rows: 0fr;
+
 	&--open {
-		opacity: 1;
+		grid-template-rows: 1fr;
 		padding-top: 10px;
-		max-height: 300px;
+	}
+
+	& > div {
+		overflow: hidden;
 	}
 }

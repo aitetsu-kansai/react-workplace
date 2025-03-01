@@ -38,6 +38,11 @@
 		transition: 0.15s all ease;
 		border-radius: 8px;
 		padding-inline: 15px;
+		margin-bottom: 5px;
+		&:last-child {
+			margin-bottom: 0;
+		}
+
 		&:hover {
 			background-color: var(--secondary-accent-color);
 			cursor: pointer;

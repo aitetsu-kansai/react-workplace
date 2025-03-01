@@ -75,6 +75,12 @@ input {
 	max-width: 220px;
 }
 
+p:focus {
+	margin-inline: 20px;
+	border: none;
+	background-color: none;
+}
+
 input[type='checkbox'] {
 	box-shadow: none;
 	appearance: none;
@@ -91,6 +97,10 @@ input[type='checkbox'] {
 	transition: all 0.2s ease-in-out;
 	background-color: var(--secondary-accent-color);
 	border-color: var(--secondary-main-color);
+}
+
+input[type='checkbox']:focus {
+	border-color: var(--secondary-accent-color);
 }
 
 input[type='checkbox']:checked {

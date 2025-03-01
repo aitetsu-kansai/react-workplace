@@ -25,7 +25,7 @@ function NotesFolder({ children }) {
 					folderIsOpen ? 'folder-content--open' : ''
 				}`}
 			>
-				{children}
+				<div>{children}</div>
 			</div>
 		</div>
 	)

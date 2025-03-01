@@ -4,14 +4,12 @@ import { RxCross1 } from 'react-icons/rx'
 import { useDispatch } from 'react-redux'
 import { deleteTask, toggleTask } from '../../../../redux/slices/notesSlice'
 import style from './Task.module.scss'
-// import { useSortable } from '@dnd-kit/sortable'
 
-function Task({ task, index, isOverlay = false }) {
-	const { attributes, listeners, setNodeRef, transform, isDragging } =
-		useDraggable({
-			id: task.taskId,
-			data: { task, type: 'task' },
-		})
+function Task({ task, isOverlay = false }) {
+	const { attributes, listeners, setNodeRef, transform } = useDraggable({
+		id: task.taskId,
+		data: { task, type: 'task' },
+	})
 
 	const dispatch = useDispatch()
 
