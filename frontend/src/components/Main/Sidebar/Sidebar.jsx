@@ -3,9 +3,10 @@ import { RxCross1 } from 'react-icons/rx'
 import NotesFolder from './NotesFolder/NotesFolder'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { selectSidebarTabFilter } from '../../../redux/slices/filterSlice'
-import { removeNote } from '../../../redux/slices/notesSlice'
+import { setInfo } from '../../../redux/slices/infoSlice'
+import { addNote, removeNote } from '../../../redux/slices/notesSlice'
 import {
 	selectSidebebarVisibleState,
 	selectTabs,
@@ -17,18 +18,66 @@ import Filter from '../Filter/Filter'
 import style from './Sidebar.module.scss'
 
 function Sidebar() {
+	const noteId = useParams()
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 	const tabs = useSelector(selectTabs)
+	const [notes, setNotes] = useState([])
 	const sidebarVisibleState = useSelector(selectSidebebarVisibleState)
 	const sidebarTabFilter = useSelector(selectSidebarTabFilter)
 
-	const filteredSidebarNotes = tabs.filter(tab => {
+	const filteredSidebarNotes = notes.filter(tab => {
 		const matchesName = tab.name.includes(sidebarTabFilter.toLowerCase())
 		return matchesName
 	})
 
-	// const [sibebarIsVisible, setSidebarIsVisible] = useState(true)
+	useEffect(() => {
+		const fetchNotes = async () => {
+			try {
+				const response = await fetch('http://localhost:5000/notes')
+				if (response.ok) {
+					const result = await response.json()
+					console.log(result)
+					setNotes(result)
+					result.forEach(el => {
+						dispatch(addNote({ id: el.id, name: el.name }))
+					})
+				}
+			} catch (error) {
+				console.error('error', error)
+			}
+		}
+		fetchNotes()
+	}, [])
+
+	const handleDeleteNote = async (e, id) => {
+		e.stopPropagation()
+		console.log(id)
+
+		try {
+			const response = await fetch(`http://localhost:5000/notes/${id}`, {
+				method: 'DELETE',
+				headers: { 'Content-Type': 'application/json' },
+			})
+			console.log(response)
+			if (!response.ok) {
+				throw new Error('Failed to create note')
+			}
+
+			const res = await response.json()
+			console.log('RES' + res)
+			setNotes(notes.filter(el => el.id !== id))
+			dispatch(removeNote(id))
+		} catch (error) {
+			console.error(error)
+			dispatch(
+				setInfo({ infoCategory: 'error', infoMessage: 'Failed to delete note' })
+			)
+		}
+
+		handleNavigate(`/notes`)
+	}
+
 	const sidebarRef = useRef(null)
 	const resizerRef = useRef(null)
 	const [isResizing, setIsResizing] = useState(false)
@@ -72,7 +121,6 @@ function Sidebar() {
 				setSidebarWidth('auto')
 			}, 250)
 		}
-		console.log(filteredSidebarNotes)
 
 		document.addEventListener('mousemove', resize)
 		document.addEventListener('mouseup', stopResizing)
@@ -101,7 +149,7 @@ function Sidebar() {
 				onMouseDown={e => e.preventDefault()}
 			>
 				<NotesFolder>
-					{tabs.length > 0 ? (
+					{notes.length > 0 ? (
 						filteredSidebarNotes.map(el => (
 							<div
 								className={`${style['sidebar-container__element']} ${
@@ -123,13 +171,10 @@ function Sidebar() {
 								key={el.id}
 							>
 								<p>{el.name}</p>
-								<RxCross1
-									onMouseUp={e => {
-										e.stopPropagation()
-										dispatch(removeNote(el.id))
-										handleNavigate(`/notes`)
-									}}
-								/>
+								<RxCross1 onMouseUp={e => {
+									console.log(el.id)
+									handleDeleteNote(e, el.id)
+								}} />
 							</div>
 						))
 					) : (
