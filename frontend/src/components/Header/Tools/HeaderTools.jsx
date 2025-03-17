@@ -69,38 +69,6 @@ function Tools() {
 		setInputIsShow(false)
 	}
 
-	// const handleOnSubmit = e => {
-	// 	e.preventDefault()
-
-	// 	const trimmedName = noteName.trim()
-
-	// 	if (!trimmedName) {
-	// 		dispatch(
-	// 			setInfo({
-	// 				infoCategory: 'error',
-	// 				infoMessage: 'Note name cannot be empty',
-	// 			})
-	// 		)
-	// 		return
-	// 	}
-
-	// 	const isDublicate = notes.some(
-	// 		note => trimmedName === note.name.trim().toLowerCase()
-	// 	)
-
-	// 	if (isDublicate) {
-	// 		dispatch(
-	// 			setInfo({ infoMessage: 'The note with this name is already created' })
-	// 		)
-	// 		return
-	// 	}
-
-	// 	dispatch(addNote({ id: generateId(), name: trimmedName }))
-
-	// 	setNoteName('')
-	// 	setInputIsShow(false)
-	// }
-
 	const handleToggleSidebar = () => {
 		const isNotesPage = location.pathname.startsWith('/notes')
 		const isShow = isNotesPage ? !sidebarVisibleState : true

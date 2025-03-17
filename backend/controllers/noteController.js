@@ -1,6 +1,7 @@
+import Group from '../models/Group.js'
 import Note from '../models/Note.js'
+import Task from '../models/Task.js'
 
-// Создание новой заметки
 export const createNote = async (req, res) => {
 	try {
 		const { name, id } = req.body
@@ -28,8 +29,9 @@ export const getNotes = async (req, res) => {
 export const deleteNote = async (req, res) => {
 	try {
 		const { id } = req.params
-		console.log(id)
-		const deletedNote = await Note.findOneAndDelete(id)
+		await Task.deleteMany({id})
+		await Group.deleteMany({id})
+		const deletedNote = await Note.findOneAndDelete({ id })
 
 		if (!deletedNote) {
 			return res.status(404).json({ error: 'The note is not found' })
@@ -37,6 +39,6 @@ export const deleteNote = async (req, res) => {
 
 		res.json({ message: 'The note deleted', deletedNote })
 	} catch (err) {
-		res.status(500).json({ error: 'Ошибка при удалении заметки' })
+		res.status(500).json({ error: 'Note deletion error' })
 	}
 }

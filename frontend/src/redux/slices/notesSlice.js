@@ -32,15 +32,28 @@ const notesSlice = createSlice({
 			}
 		},
 		updateGroupOrder: (state, action) => {
-			const { oldIndex, newIndex } = action.payload
+			//2 (попробовать найти группу, у которой меняется номер, взять оттуда старый номер и поменять местами с группой, с которой мы меняем местами номер)
 
-			state.groups = arrayMove(state.groups, oldIndex, newIndex)
-			state.groups = state.groups.map((group, index) => ({
-				...group,
-				order: index,
-			}))
+			//1
+			const { oldIndex, newIndex, noteId } = action.payload
+
+			const filteredGroups = state.groups.filter(
+				group => group.noteId === noteId
+			)
+
+			const updatedGroups = arrayMove(filteredGroups, oldIndex, newIndex).map(
+				(group, index) => ({
+					...group,
+					order: index,
+				})
+			)
+			console.log(updatedGroups)
+			state.groups = state.groups.filter(
+				el => !updatedGroups.some(e => el.groupId === e.groupId)
+			)
+
+			state.groups = [...state.groups, ...updatedGroups]
 		},
-
 		deleteGroup: (state, action) => {
 			const groupToRemoveId = action.payload
 			state.groups = state.groups.filter(
@@ -100,7 +113,7 @@ export const {
 	deleteTask,
 	updateTaskGroup,
 	updateGroupOrder,
-	deleteGroup
+	deleteGroup,
 } = notesSlice.actions
 export const selectNotes = state => state.notes.notes
 export const selectGroups = state => state.notes.groups

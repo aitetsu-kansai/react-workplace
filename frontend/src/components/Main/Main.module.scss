@@ -1,6 +1,6 @@
 @use '../../variables.scss' as vars;
 .main-container {
-	height: 100vh;
+	min-height: 100vh;
 	text-align: center;
 	display: grid;
 	grid-template-columns: var(--grid-column-template);

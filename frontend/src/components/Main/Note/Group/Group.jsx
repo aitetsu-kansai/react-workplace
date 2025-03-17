@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import style from './Group.module.scss'
 
 import { RxCross1 } from 'react-icons/rx'
-import { useParams } from 'react-router-dom'
+import { setInfo } from '../../../../redux/slices/infoSlice'
 import {
 	addTask,
 	deleteGroup,
@@ -16,7 +16,7 @@ import {
 import { generateId } from '../../../../utils/generateRandomId'
 import Input from '../../../UI-Components/Input/Input'
 function Group({ children, groupName, noteId, groupId }) {
-	const tasks = useSelector(state => selectTasksByGroupId(state, groupId))
+	const tasksById = useSelector(state => selectTasksByGroupId(state, groupId))
 
 	const { isOver, attributes, listeners, setNodeRef, transform, transition } =
 		useSortable({
@@ -33,8 +33,25 @@ function Group({ children, groupName, noteId, groupId }) {
 
 	const tasksRef = useRef(null)
 
-	const handleDeleteGroup = groupId => {
-		dispatch(deleteGroup(groupId))
+	const handleDeleteGroup = async groupId => {
+		try {
+			const response = await fetch(`http://localhost:5000/groups/${groupId}`, {
+				method: 'DELETE',
+				headers: { 'Content-Type': 'application/json' },
+			})
+			if (!response.ok) {
+				throw new Error('Failed to delete group')
+			}
+			console.log(groupId)
+			dispatch(deleteGroup(groupId))
+		} catch (error) {
+			dispatch(
+				setInfo({
+					infoCategory: 'error',
+					infoMessage: 'Error' + error,
+				})
+			)
+		}
 	}
 
 	const [taskName, setTaskName] = useState('')
@@ -48,16 +65,36 @@ function Group({ children, groupName, noteId, groupId }) {
 		setTaskIsOpen(!taskIsOpen)
 	}
 
-	const handleOnSubmit = e => {
+	const handleOnSubmit = async e => {
 		e.preventDefault()
 
-		const taskId = generateId()
-		if (taskName) {
-			dispatch(
-				addTask({ noteId, groupId, taskId, taskName, order: tasks.length })
-			)
+		try {
+			const response = await fetch('http://localhost:5000/tasks', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					noteId,
+					groupId,
+					taskId: generateId(),
+					taskName,
+					order: tasksById.length,
+				}),
+			})
+
+			if (!response.ok) {
+				throw new Error('Failed to create task')
+			}
+
+			const newTask = await response.json()
+			console.log(newTask)
+			dispatch(addTask(newTask))
 			setTaskName('')
-			console.log({ noteId, groupId, taskName })
+		} catch (error) {
+			dispatch(
+				setInfo({ infoCategory: 'error', infoMessage: 'Failed to create task' })
+			)
 		}
 	}
 

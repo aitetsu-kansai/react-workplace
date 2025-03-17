@@ -12,7 +12,7 @@ import {
 	SortableContext,
 	sortableKeyboardCoordinates,
 } from '@dnd-kit/sortable'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { PiColumnsPlusLeftFill } from 'react-icons/pi'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
@@ -21,6 +21,7 @@ import style from './Note.module.scss'
 
 import {
 	addGroup,
+	addTask,
 	selectGroupsById,
 	selectNoteById,
 	selectTasksById,
@@ -36,13 +37,81 @@ import Task from './Task/Task'
 function Note() {
 	const dispatch = useDispatch()
 	const { id } = useParams()
+
 	const curNote = useSelector(state => selectNoteById(state, id))
 	const groupsById = useSelector(state => selectGroupsById(state, id))
-	const tasks = useSelector(state => selectTasksById(state, id))
+	const tasksById = useSelector(state => selectTasksById(state, id))
 	const [groupName, setGroupName] = useState('')
 	const [inputIsShow, setInputIsShow] = useState(false)
 
-	const handleOnSubmit = e => {
+	useEffect(() => {
+		const fetchGroups = async () => {
+
+			try {
+				const response = await fetch(`http://localhost:5000/groups`)
+				if (response.ok) {
+					const result = await response.json()
+					result.forEach(el => {
+						const groupExists = groupsById.some(
+							group => group.groupId === el.groupId
+						)
+
+						if (!groupExists && el.noteId === id) {
+							dispatch(addGroup(el))
+						}
+					})
+				}
+			} catch (error) {
+				dispatch(
+					setInfo({
+						infoCategory: 'error',
+						infoMessage: 'Failed to fetch groups',
+					})
+				)
+			}
+		}
+
+		const fetchTasks = async () => {
+			try {
+				const response = await fetch('http://localhost:5000/tasks')
+				if (response.ok) {
+					const result = await response.json()
+
+					result.forEach(el => {
+						const taskExist = tasksById.some(task => {
+							// console.log(task.taskId === el.taskId)
+
+							return task.taskId === el.taskId
+						})
+						// console.log(taskExist)
+						if (!taskExist) {
+							dispatch(
+								addTask({
+									noteId: el.noteId,
+									groupId: el.groupId,
+									taskId: el.taskId,
+									taskName: el.taskName,
+									order: el.order,
+								})
+							)
+						}
+					})
+				}
+			} catch (error) {
+				dispatch(
+					setInfo({
+						infoCategory: 'error',
+						infoMessage: 'Failed to fetch tasks',
+					})
+				)
+			}
+		}
+
+		fetchGroups()
+		fetchTasks()
+	}, [id])
+
+	const handleOnSubmit = async e => {
 		e.preventDefault()
 		const groupId = generateId()
 		const isDublicate = groupsById.some(group => group.groupName === groupName)
@@ -52,12 +121,39 @@ function Note() {
 			)
 			return
 		}
-		if (groupName) {
+		if (!groupName) {
 			dispatch(
-				addGroup({ order: groupsById.length, noteId: id, groupName, groupId })
+				setInfo({
+					infoCategory: 'error',
+					infoMessage: 'Group name cannot be empty',
+				})
 			)
+		}
+
+		try {
+			const response = await fetch('http://localhost:5000/groups', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					order: groupsById.length,
+					noteId: id,
+					groupName,
+					groupId,
+				}),
+			})
+
+			if (!response.ok) {
+				throw new Error('Failed to create group')
+			}
+
+			const newGroup = await response.json()
+			console.log(newGroup)
+
+			dispatch(addGroup(newGroup))
 			setGroupName('')
 			setInputIsShow(!inputIsShow)
+		} catch (err) {
+			console.log('Error' + err)
 		}
 	}
 
@@ -79,7 +175,7 @@ function Note() {
 	}
 
 	const handleDragEnd = useCallback(
-		event => {
+		async event => {
 			const { active, over } = event
 			if (!over) return
 			if (active.data.current.type === 'task') {
@@ -87,13 +183,33 @@ function Note() {
 				const newGroupId = over.id
 
 				if (active.data.current?.task.groupId !== newGroupId) {
-					setActiveTask(null)
-					dispatch(
-						updateTaskGroup({
-							newGroupId,
-							taskId,
-						})
-					)
+					try {
+						const response = await fetch(
+							`http://localhost:5000/tasks/${taskId}`,
+							{
+								method: 'PUT',
+								headers: {
+									'Content-Type': 'application/json',
+								},
+								body: JSON.stringify({ groupId: newGroupId }),
+							}
+						)
+						if (!response.ok) throw new Error('Failed to update task')
+						dispatch(
+							updateTaskGroup({
+								newGroupId,
+								taskId,
+							})
+						)
+						setActiveTask(null)
+					} catch (error) {
+						dispatch(
+							setInfo({
+								infoMessage: `Failed to update task's group`,
+								infoCategory: 'error',
+							})
+						)
+					}
 				}
 			}
 
@@ -101,16 +217,36 @@ function Note() {
 				const oldIndex = active.data.current?.sortable.index
 				const newIndex = over.data.current?.sortable.index
 				if (active.id !== over.id) {
+					console.log(id)
 					dispatch(
 						updateGroupOrder({
 							oldIndex,
 							newIndex,
+							noteId: id,
 						})
 					)
+
+					// try {
+					// 	const response = await fetch(`http://localhost:5000/groups`, {
+					// 		method: 'PUT',
+					// 		headers: {
+					// 			'Content-Type': 'application/json',
+					// 		},
+					// 		body: JSON.stringify({ oldIndex, newIndex, noteId: id }),
+					// 	})
+					// 	if (!response.ok) throw new Error('Failed to update task')
+					// } catch (error) {
+					// 	dispatch(
+					// 		setInfo({
+					// 			infoMessage: `Failed to update group's order`,
+					// 			infoCategory: 'error',
+					// 		})
+					// 	)
+					// }
 				}
 			}
 		},
-		[dispatch]
+		[dispatch, id]
 	)
 
 	return (
@@ -149,7 +285,7 @@ function Note() {
 									noteId={group.noteId}
 									id={group.order}
 								>
-									{tasks
+									{tasksById
 										.filter(task => task.groupId === group.groupId)
 										.map(task => {
 											return (

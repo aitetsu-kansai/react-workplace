@@ -3,7 +3,7 @@ import { RxCross1 } from 'react-icons/rx'
 import NotesFolder from './NotesFolder/NotesFolder'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { selectSidebarTabFilter } from '../../../redux/slices/filterSlice'
 import { setInfo } from '../../../redux/slices/infoSlice'
 import { addNote, removeNote } from '../../../redux/slices/notesSlice'
@@ -18,15 +18,15 @@ import Filter from '../Filter/Filter'
 import style from './Sidebar.module.scss'
 
 function Sidebar() {
-	const noteId = useParams()
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 	const tabs = useSelector(selectTabs)
-	const [notes, setNotes] = useState([])
+
+	// const [notes, setNotes] = useState([])
 	const sidebarVisibleState = useSelector(selectSidebebarVisibleState)
 	const sidebarTabFilter = useSelector(selectSidebarTabFilter)
 
-	const filteredSidebarNotes = notes.filter(tab => {
+	const filteredSidebarNotes = tabs.filter(tab => {
 		const matchesName = tab.name.includes(sidebarTabFilter.toLowerCase())
 		return matchesName
 	})
@@ -37,18 +37,32 @@ function Sidebar() {
 				const response = await fetch('http://localhost:5000/notes')
 				if (response.ok) {
 					const result = await response.json()
-					console.log(result)
-					setNotes(result)
+					// console.log(result)
+
 					result.forEach(el => {
-						dispatch(addNote({ id: el.id, name: el.name }))
+						// console.log(el.id)
+						const noteExists = tabs.some(note => note.id === el.id)
+						if (!noteExists) {
+							dispatch(addNote({ id: el.id, name: el.name }))
+						}
 					})
 				}
 			} catch (error) {
-				console.error('error', error)
+				dispatch(
+					setInfo({
+						infoCategory: 'error',
+						infoMessage: 'Failed to fetch notes',
+					})
+				)
 			}
 		}
 		fetchNotes()
+		handleNavigate('/notes')
 	}, [])
+
+	const handleNavigate = url => {
+		navigate(url)
+	}
 
 	const handleDeleteNote = async (e, id) => {
 		e.stopPropagation()
@@ -59,14 +73,11 @@ function Sidebar() {
 				method: 'DELETE',
 				headers: { 'Content-Type': 'application/json' },
 			})
-			console.log(response)
 			if (!response.ok) {
-				throw new Error('Failed to create note')
+				throw new Error('Failed to delete note')
 			}
 
-			const res = await response.json()
-			console.log('RES' + res)
-			setNotes(notes.filter(el => el.id !== id))
+			// setNotes(notes.filter(el => el.id !== id))
 			dispatch(removeNote(id))
 		} catch (error) {
 			console.error(error)
@@ -91,8 +102,17 @@ function Sidebar() {
 		setIsResizing(false)
 	}, [])
 
-	const handleNavigate = url => {
-		navigate(url)
+	const handleOnMouseUp = (e, el) => {
+		if (e.button === 0) {
+			!el.isOpen && dispatch(toggleTab({ id: el.id, type: 'open' }))
+			if (!el.isActive) {
+				dispatch(setTabIsActive(el.id))
+				handleNavigate(el.id)
+			}
+		}
+		if (e.button === 1 && !el.isOpen) {
+			dispatch(toggleTab({ id: el.id, type: 'open' }))
+		}
 	}
 
 	const resize = useCallback(
@@ -149,32 +169,21 @@ function Sidebar() {
 				onMouseDown={e => e.preventDefault()}
 			>
 				<NotesFolder>
-					{notes.length > 0 ? (
+					{tabs.length > 0 ? (
 						filteredSidebarNotes.map(el => (
 							<div
 								className={`${style['sidebar-container__element']} ${
 									el.isActive ? style['active'] : ''
 								}`}
-								onMouseUp={e => {
-									if (e.button === 0) {
-										!el.isOpen &&
-											dispatch(toggleTab({ id: el.id, type: 'open' }))
-										if (!el.isActive) {
-											dispatch(setTabIsActive(el.id))
-											handleNavigate(el.id)
-										}
-									}
-									if (e.button === 1 && !el.isOpen) {
-										dispatch(toggleTab({ id: el.id, type: 'open' }))
-									}
-								}}
+								onMouseUp={e => handleOnMouseUp(e, el)}
 								key={el.id}
 							>
 								<p>{el.name}</p>
-								<RxCross1 onMouseUp={e => {
-									console.log(el.id)
-									handleDeleteNote(e, el.id)
-								}} />
+								<RxCross1
+									onMouseUp={e => {
+										handleDeleteNote(e, el.id)
+									}}
+								/>
 							</div>
 						))
 					) : (
