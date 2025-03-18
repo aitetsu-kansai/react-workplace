@@ -17,9 +17,9 @@ import Dropdown from '../../UI-Components/Drowdown/Dropdown'
 import InputLabel from '../../UI-Components/Label/InputLabel.jsx'
 import Modal from '../../UI-Components/Modal/Modal.jsx'
 
-import { generateId } from '../../../utils/generateRandomId.js'
 import style from './HeaderTools.module.scss'
 import ThemeSwitcher from './ThemeSwitcher/ThemeSwitcher.jsx'
+import { generateId } from '../../../../utils/generateRandomId.js'
 
 function Tools() {
 	const location = useLocation()

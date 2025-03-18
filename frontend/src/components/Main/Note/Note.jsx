@@ -19,16 +19,16 @@ import { useParams } from 'react-router-dom'
 import { setInfo } from '../../../redux/slices/infoSlice'
 import style from './Note.module.scss'
 
+import { createGroup, fetchGroups, fetchTasks } from '../../../../utils/api'
+import { handleDragEnd, handleDragStart } from '../../../../utils/dndHandlers'
+import { generateId } from '../../../../utils/generateRandomId'
 import {
 	addGroup,
 	addTask,
 	selectGroupsById,
 	selectNoteById,
 	selectTasksById,
-	updateGroupOrder,
-	updateTaskGroup,
 } from '../../../redux/slices/notesSlice'
-import { generateId } from '../../../utils/generateRandomId'
 import InputLabel from '../../UI-Components/Label/InputLabel'
 import Modal from '../../UI-Components/Modal/Modal'
 import Group from './Group/Group'
@@ -45,70 +45,38 @@ function Note() {
 	const [inputIsShow, setInputIsShow] = useState(false)
 
 	useEffect(() => {
-		const fetchGroups = async () => {
-
+		const loadData = async () => {
 			try {
-				const response = await fetch(`http://localhost:5000/groups`)
-				if (response.ok) {
-					const result = await response.json()
-					result.forEach(el => {
-						const groupExists = groupsById.some(
-							group => group.groupId === el.groupId
-						)
+				const groups = await fetchGroups()
+				groups.forEach(el => {
+					const groupExists = groupsById.some(
+						group => group.groupId === el.groupId
+					)
 
-						if (!groupExists && el.noteId === id) {
-							dispatch(addGroup(el))
-						}
-					})
-				}
+					if (!groupExists && el.noteId === id) {
+						dispatch(addGroup(el))
+					}
+				})
+
+				const tasks = await fetchTasks()
+				tasks.forEach(el => {
+					const taskExist = tasksById.some(task => task.taskId === el.taskId)
+					console.log(el)
+					if (!taskExist && el.noteId === id) {
+						dispatch(addTask(el))
+					}
+				})
 			} catch (error) {
 				dispatch(
 					setInfo({
 						infoCategory: 'error',
-						infoMessage: 'Failed to fetch groups',
+						infoMessage: 'Failed to fetch data',
 					})
 				)
 			}
 		}
 
-		const fetchTasks = async () => {
-			try {
-				const response = await fetch('http://localhost:5000/tasks')
-				if (response.ok) {
-					const result = await response.json()
-
-					result.forEach(el => {
-						const taskExist = tasksById.some(task => {
-							// console.log(task.taskId === el.taskId)
-
-							return task.taskId === el.taskId
-						})
-						// console.log(taskExist)
-						if (!taskExist) {
-							dispatch(
-								addTask({
-									noteId: el.noteId,
-									groupId: el.groupId,
-									taskId: el.taskId,
-									taskName: el.taskName,
-									order: el.order,
-								})
-							)
-						}
-					})
-				}
-			} catch (error) {
-				dispatch(
-					setInfo({
-						infoCategory: 'error',
-						infoMessage: 'Failed to fetch tasks',
-					})
-				)
-			}
-		}
-
-		fetchGroups()
-		fetchTasks()
+		loadData()
 	}, [id])
 
 	const handleOnSubmit = async e => {
@@ -131,22 +99,13 @@ function Note() {
 		}
 
 		try {
-			const response = await fetch('http://localhost:5000/groups', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					order: groupsById.length,
-					noteId: id,
-					groupName,
-					groupId,
-				}),
+			const newGroup = await createGroup({
+				order: groupsById.length,
+				noteId: id,
+				groupName,
+				groupId,
 			})
 
-			if (!response.ok) {
-				throw new Error('Failed to create group')
-			}
-
-			const newGroup = await response.json()
 			console.log(newGroup)
 
 			dispatch(addGroup(newGroup))
@@ -166,95 +125,17 @@ function Note() {
 		})
 	)
 
-	const handleDragStart = event => {
-		const { active } = event
-
-		if (active.data.current?.type === 'task') {
-			setActiveTask({ ...active.data.current.task })
-		} else setActiveTask(null)
-	}
-
-	const handleDragEnd = useCallback(
-		async event => {
-			const { active, over } = event
-			if (!over) return
-			if (active.data.current.type === 'task') {
-				const taskId = active.id
-				const newGroupId = over.id
-
-				if (active.data.current?.task.groupId !== newGroupId) {
-					try {
-						const response = await fetch(
-							`http://localhost:5000/tasks/${taskId}`,
-							{
-								method: 'PUT',
-								headers: {
-									'Content-Type': 'application/json',
-								},
-								body: JSON.stringify({ groupId: newGroupId }),
-							}
-						)
-						if (!response.ok) throw new Error('Failed to update task')
-						dispatch(
-							updateTaskGroup({
-								newGroupId,
-								taskId,
-							})
-						)
-						setActiveTask(null)
-					} catch (error) {
-						dispatch(
-							setInfo({
-								infoMessage: `Failed to update task's group`,
-								infoCategory: 'error',
-							})
-						)
-					}
-				}
-			}
-
-			if (active.data.current.type === 'group') {
-				const oldIndex = active.data.current?.sortable.index
-				const newIndex = over.data.current?.sortable.index
-				if (active.id !== over.id) {
-					console.log(id)
-					dispatch(
-						updateGroupOrder({
-							oldIndex,
-							newIndex,
-							noteId: id,
-						})
-					)
-
-					// try {
-					// 	const response = await fetch(`http://localhost:5000/groups`, {
-					// 		method: 'PUT',
-					// 		headers: {
-					// 			'Content-Type': 'application/json',
-					// 		},
-					// 		body: JSON.stringify({ oldIndex, newIndex, noteId: id }),
-					// 	})
-					// 	if (!response.ok) throw new Error('Failed to update task')
-					// } catch (error) {
-					// 	dispatch(
-					// 		setInfo({
-					// 			infoMessage: `Failed to update group's order`,
-					// 			infoCategory: 'error',
-					// 		})
-					// 	)
-					// }
-				}
-			}
-		},
-		[dispatch, id]
-	)
-
 	return (
 		<DndContext
-			onDragEnd={handleDragEnd}
+			onDragEnd={useCallback(
+				event => {
+					handleDragEnd(event, dispatch, id, setActiveTask)
+				},
+				[dispatch, id]
+			)}
 			autoScroll={false}
 			collisionDetection={closestCenter}
-			onDragStart={handleDragStart}
+			onDragStart={event => handleDragStart(event, setActiveTask)}
 			sensors={sensors}
 		>
 			<div className={style['note-container']}>

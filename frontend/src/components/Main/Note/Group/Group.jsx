@@ -7,13 +7,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import style from './Group.module.scss'
 
 import { RxCross1 } from 'react-icons/rx'
+import { generateId } from '../../../../../utils/generateRandomId'
 import { setInfo } from '../../../../redux/slices/infoSlice'
 import {
 	addTask,
 	deleteGroup,
 	selectTasksByGroupId,
 } from '../../../../redux/slices/notesSlice'
-import { generateId } from '../../../../utils/generateRandomId'
 import Input from '../../../UI-Components/Input/Input'
 function Group({ children, groupName, noteId, groupId }) {
 	const tasksById = useSelector(state => selectTasksByGroupId(state, groupId))
@@ -68,26 +68,23 @@ function Group({ children, groupName, noteId, groupId }) {
 	const handleOnSubmit = async e => {
 		e.preventDefault()
 
+		if (!taskName) {
+			dispatch(
+				setInfo({
+					infoCategory: 'warning',
+					infoMessage: 'Task name is required',
+				})
+			)
+			return
+		}
 		try {
-			const response = await fetch('http://localhost:5000/tasks', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					noteId,
-					groupId,
-					taskId: generateId(),
-					taskName,
-					order: tasksById.length,
-				}),
+			const newTask = await createTask.json({
+				noteId,
+				groupId,
+				taskId: generateId(),
+				taskName,
+				order: tasksById.length,
 			})
-
-			if (!response.ok) {
-				throw new Error('Failed to create task')
-			}
-
-			const newTask = await response.json()
 			console.log(newTask)
 			dispatch(addTask(newTask))
 			setTaskName('')
