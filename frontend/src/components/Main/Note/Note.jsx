@@ -165,15 +165,7 @@ function Note() {
 									groupId={group.groupId}
 									noteId={group.noteId}
 									id={group.order}
-								>
-									{tasksById
-										.filter(task => task.groupId === group.groupId)
-										.map(task => {
-											return (
-												<Task key={task.taskId} task={task} id={task.order} />
-											)
-										})}
-								</Group>
+								/>
 							)
 						})}
 					</SortableContext>

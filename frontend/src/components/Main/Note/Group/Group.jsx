@@ -13,10 +13,16 @@ import {
 	addTask,
 	deleteGroup,
 	selectTasksByGroupId,
+	selectTasksById,
 } from '../../../../redux/slices/notesSlice'
 import Input from '../../../UI-Components/Input/Input'
-function Group({ children, groupName, noteId, groupId }) {
-	const tasksById = useSelector(state => selectTasksByGroupId(state, groupId))
+import Task from '../Task/Task'
+import { createTask } from '../../../../../utils/api'
+function Group({ groupName, noteId, groupId }) {
+	const tasksByGroupId = useSelector(state =>
+		selectTasksByGroupId(state, groupId)
+	)
+	const tasksByNoteId = useSelector(state => selectTasksById(state, noteId))
 
 	const { isOver, attributes, listeners, setNodeRef, transform, transition } =
 		useSortable({
@@ -78,12 +84,12 @@ function Group({ children, groupName, noteId, groupId }) {
 			return
 		}
 		try {
-			const newTask = await createTask.json({
+			const newTask = await createTask({
 				noteId,
 				groupId,
 				taskId: generateId(),
 				taskName,
-				order: tasksById.length,
+				order: tasksByGroupId.length,
 			})
 			console.log(newTask)
 			dispatch(addTask(newTask))
@@ -143,7 +149,13 @@ function Group({ children, groupName, noteId, groupId }) {
 				}}
 				ref={tasksRef}
 			>
-				<div>{children}</div>
+				<div>
+					{tasksByNoteId
+						.filter(task => task.groupId === groupId)
+						.map(task => {
+							return <Task key={task.taskId} task={task} id={task.order} />
+						})}
+				</div>
 			</div>
 		</div>
 	)
