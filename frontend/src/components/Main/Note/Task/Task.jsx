@@ -4,6 +4,7 @@ import { RxCross1 } from 'react-icons/rx'
 import { useDispatch } from 'react-redux'
 import { deleteTask, toggleTask } from '../../../../redux/slices/notesSlice'
 import style from './Task.module.scss'
+import { setInfo } from '../../../../redux/slices/infoSlice'
 
 function Task({ task, isOverlay = false }) {
 	const { attributes, listeners, setNodeRef, transform } = useDraggable({
@@ -20,9 +21,31 @@ function Task({ task, isOverlay = false }) {
 		})
 	}
 
-	const handleDeleteTask = (e, taskId) => {
+	const handleDeleteTask = async (e, taskId) => {
 		e.stopPropagation()
-		dispatch(deleteTask(taskId))
+
+		try {
+			const response = await fetch(
+				`http://localhost:5000/tasks/${taskId}`,
+				{
+					method: 'DELETE',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				}
+			)
+
+			if (!response.ok) throw new Error('Failed to delete task')
+			dispatch(deleteTask(taskId))
+		} catch (error) {
+			console.error(error)
+			dispatch(
+				setInfo({
+					infoCategory: 'error',
+					infoMessage: 'Failed to delete task',
+				})
+			)
+		}
 	}
 
 	const newStyle = transform && {

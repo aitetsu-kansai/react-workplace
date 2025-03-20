@@ -12,22 +12,23 @@ import {
 	SortableContext,
 	sortableKeyboardCoordinates,
 } from '@dnd-kit/sortable'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { PiColumnsPlusLeftFill } from 'react-icons/pi'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { setInfo } from '../../../redux/slices/infoSlice'
 import style from './Note.module.scss'
 
+import { createGroup, fetchGroups, fetchTasks } from '../../../../utils/api'
+import { handleDragEnd, handleDragStart } from '../../../../utils/dndHandlers'
+import { generateId } from '../../../../utils/generateRandomId'
 import {
 	addGroup,
+	addTask,
 	selectGroupsById,
 	selectNoteById,
 	selectTasksById,
-	updateGroupOrder,
-	updateTaskGroup,
 } from '../../../redux/slices/notesSlice'
-import { generateId } from '../../../utils/generateRandomId'
 import InputLabel from '../../UI-Components/Label/InputLabel'
 import Modal from '../../UI-Components/Modal/Modal'
 import Group from './Group/Group'
@@ -36,13 +37,49 @@ import Task from './Task/Task'
 function Note() {
 	const dispatch = useDispatch()
 	const { id } = useParams()
+
 	const curNote = useSelector(state => selectNoteById(state, id))
 	const groupsById = useSelector(state => selectGroupsById(state, id))
-	const tasks = useSelector(state => selectTasksById(state, id))
+	const tasksById = useSelector(state => selectTasksById(state, id))
 	const [groupName, setGroupName] = useState('')
 	const [inputIsShow, setInputIsShow] = useState(false)
 
-	const handleOnSubmit = e => {
+	useEffect(() => {
+		const loadData = async () => {
+			try {
+				const groups = await fetchGroups()
+				groups.forEach(el => {
+					const groupExists = groupsById.some(
+						group => group.groupId === el.groupId
+					)
+
+					if (!groupExists && el.noteId === id) {
+						dispatch(addGroup(el))
+					}
+				})
+
+				const tasks = await fetchTasks()
+				tasks.forEach(el => {
+					const taskExist = tasksById.some(task => task.taskId === el.taskId)
+					console.log(el)
+					if (!taskExist && el.noteId === id) {
+						dispatch(addTask(el))
+					}
+				})
+			} catch (error) {
+				dispatch(
+					setInfo({
+						infoCategory: 'error',
+						infoMessage: 'Failed to fetch data',
+					})
+				)
+			}
+		}
+
+		loadData()
+	}, [id])
+
+	const handleOnSubmit = async e => {
 		e.preventDefault()
 		const groupId = generateId()
 		const isDublicate = groupsById.some(group => group.groupName === groupName)
@@ -52,12 +89,30 @@ function Note() {
 			)
 			return
 		}
-		if (groupName) {
+		if (!groupName) {
 			dispatch(
-				addGroup({ order: groupsById.length, noteId: id, groupName, groupId })
+				setInfo({
+					infoCategory: 'error',
+					infoMessage: 'Group name cannot be empty',
+				})
 			)
+		}
+
+		try {
+			const newGroup = await createGroup({
+				order: groupsById.length,
+				noteId: id,
+				groupName,
+				groupId,
+			})
+
+			console.log(newGroup)
+
+			dispatch(addGroup(newGroup))
 			setGroupName('')
 			setInputIsShow(!inputIsShow)
+		} catch (err) {
+			console.log('Error' + err)
 		}
 	}
 
@@ -70,55 +125,17 @@ function Note() {
 		})
 	)
 
-	const handleDragStart = event => {
-		const { active } = event
-
-		if (active.data.current?.type === 'task') {
-			setActiveTask({ ...active.data.current.task })
-		} else setActiveTask(null)
-	}
-
-	const handleDragEnd = useCallback(
-		event => {
-			const { active, over } = event
-			if (!over) return
-			if (active.data.current.type === 'task') {
-				const taskId = active.id
-				const newGroupId = over.id
-
-				if (active.data.current?.task.groupId !== newGroupId) {
-					setActiveTask(null)
-					dispatch(
-						updateTaskGroup({
-							newGroupId,
-							taskId,
-						})
-					)
-				}
-			}
-
-			if (active.data.current.type === 'group') {
-				const oldIndex = active.data.current?.sortable.index
-				const newIndex = over.data.current?.sortable.index
-				if (active.id !== over.id) {
-					dispatch(
-						updateGroupOrder({
-							oldIndex,
-							newIndex,
-						})
-					)
-				}
-			}
-		},
-		[dispatch]
-	)
-
 	return (
 		<DndContext
-			onDragEnd={handleDragEnd}
+			onDragEnd={useCallback(
+				event => {
+					handleDragEnd(event, dispatch, id, setActiveTask)
+				},
+				[dispatch, id]
+			)}
 			autoScroll={false}
 			collisionDetection={closestCenter}
-			onDragStart={handleDragStart}
+			onDragStart={event => handleDragStart(event, setActiveTask)}
 			sensors={sensors}
 		>
 			<div className={style['note-container']}>
@@ -148,15 +165,7 @@ function Note() {
 									groupId={group.groupId}
 									noteId={group.noteId}
 									id={group.order}
-								>
-									{tasks
-										.filter(task => task.groupId === group.groupId)
-										.map(task => {
-											return (
-												<Task key={task.taskId} task={task} id={task.order} />
-											)
-										})}
-								</Group>
+								/>
 							)
 						})}
 					</SortableContext>

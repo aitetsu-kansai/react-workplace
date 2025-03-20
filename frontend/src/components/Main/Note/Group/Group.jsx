@@ -7,16 +7,22 @@ import { useDispatch, useSelector } from 'react-redux'
 import style from './Group.module.scss'
 
 import { RxCross1 } from 'react-icons/rx'
-import { useParams } from 'react-router-dom'
+import { generateId } from '../../../../../utils/generateRandomId'
+import { setInfo } from '../../../../redux/slices/infoSlice'
 import {
 	addTask,
 	deleteGroup,
 	selectTasksByGroupId,
+	selectTasksById,
 } from '../../../../redux/slices/notesSlice'
-import { generateId } from '../../../../utils/generateRandomId'
 import Input from '../../../UI-Components/Input/Input'
-function Group({ children, groupName, noteId, groupId }) {
-	const tasks = useSelector(state => selectTasksByGroupId(state, groupId))
+import Task from '../Task/Task'
+import { createTask } from '../../../../../utils/api'
+function Group({ groupName, noteId, groupId }) {
+	const tasksByGroupId = useSelector(state =>
+		selectTasksByGroupId(state, groupId)
+	)
+	const tasksByNoteId = useSelector(state => selectTasksById(state, noteId))
 
 	const { isOver, attributes, listeners, setNodeRef, transform, transition } =
 		useSortable({
@@ -33,8 +39,25 @@ function Group({ children, groupName, noteId, groupId }) {
 
 	const tasksRef = useRef(null)
 
-	const handleDeleteGroup = groupId => {
-		dispatch(deleteGroup(groupId))
+	const handleDeleteGroup = async groupId => {
+		try {
+			const response = await fetch(`http://localhost:5000/groups/${groupId}`, {
+				method: 'DELETE',
+				headers: { 'Content-Type': 'application/json' },
+			})
+			if (!response.ok) {
+				throw new Error('Failed to delete group')
+			}
+			console.log(groupId)
+			dispatch(deleteGroup(groupId))
+		} catch (error) {
+			dispatch(
+				setInfo({
+					infoCategory: 'error',
+					infoMessage: 'Error' + error,
+				})
+			)
+		}
 	}
 
 	const [taskName, setTaskName] = useState('')
@@ -48,16 +71,33 @@ function Group({ children, groupName, noteId, groupId }) {
 		setTaskIsOpen(!taskIsOpen)
 	}
 
-	const handleOnSubmit = e => {
+	const handleOnSubmit = async e => {
 		e.preventDefault()
 
-		const taskId = generateId()
-		if (taskName) {
+		if (!taskName) {
 			dispatch(
-				addTask({ noteId, groupId, taskId, taskName, order: tasks.length })
+				setInfo({
+					infoCategory: 'warning',
+					infoMessage: 'Task name is required',
+				})
 			)
+			return
+		}
+		try {
+			const newTask = await createTask({
+				noteId,
+				groupId,
+				taskId: generateId(),
+				taskName,
+				order: tasksByGroupId.length,
+			})
+			console.log(newTask)
+			dispatch(addTask(newTask))
 			setTaskName('')
-			console.log({ noteId, groupId, taskName })
+		} catch (error) {
+			dispatch(
+				setInfo({ infoCategory: 'error', infoMessage: 'Failed to create task' })
+			)
 		}
 	}
 
@@ -109,7 +149,13 @@ function Group({ children, groupName, noteId, groupId }) {
 				}}
 				ref={tasksRef}
 			>
-				<div>{children}</div>
+				<div>
+					{tasksByNoteId
+						.filter(task => task.groupId === groupId)
+						.map(task => {
+							return <Task key={task.taskId} task={task} id={task.order} />
+						})}
+				</div>
 			</div>
 		</div>
 	)

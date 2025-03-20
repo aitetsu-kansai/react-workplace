@@ -13,13 +13,13 @@ import {
 	setAllTabsInactive,
 	setSidebarShow,
 } from '../../../redux/slices/uiSlice.js'
-import { generateId } from '../../../utils/generateRandomId.js'
 import Dropdown from '../../UI-Components/Drowdown/Dropdown'
 import InputLabel from '../../UI-Components/Label/InputLabel.jsx'
 import Modal from '../../UI-Components/Modal/Modal.jsx'
 
 import style from './HeaderTools.module.scss'
 import ThemeSwitcher from './ThemeSwitcher/ThemeSwitcher.jsx'
+import { generateId } from '../../../../utils/generateRandomId.js'
 
 function Tools() {
 	const location = useLocation()
@@ -31,11 +31,9 @@ function Tools() {
 		? location.pathname
 		: '/notes'
 
-	const handleOnSubmit = e => {
+	const handleOnSubmit = async e => {
 		e.preventDefault()
-
 		const trimmedName = noteName.trim()
-
 		if (!trimmedName) {
 			dispatch(
 				setInfo({
@@ -46,24 +44,30 @@ function Tools() {
 			return
 		}
 
-		const isDublicate = notes.some(
-			note => trimmedName === note.name.trim().toLowerCase()
-		)
+		try {
+			const response = await fetch('http://localhost:5000/notes', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ name: trimmedName, id: generateId() }),
+			})
 
-		if (isDublicate) {
+			if (!response.ok) {
+				throw new Error('Failed to create note')
+			}
+
+			const newNote = await response.json()
+			console.log(newNote)
+			dispatch(addNote(newNote))
+		} catch (error) {
+			console.error(error)
 			dispatch(
-				setInfo({ infoMessage: 'The note with this name is already created' })
+				setInfo({ infoCategory: 'error', infoMessage: 'Failed to create note' })
 			)
-			return
 		}
-
-		dispatch(addNote({ id: generateId(), name: trimmedName }))
 
 		setNoteName('')
 		setInputIsShow(false)
 	}
-
-	console.log(activeTab)
 
 	const handleToggleSidebar = () => {
 		const isNotesPage = location.pathname.startsWith('/notes')
