@@ -3,7 +3,7 @@ import {
 	updateGroupOrder,
 	updateTaskGroup,
 } from '../src/redux/slices/notesSlice'
-import { putGroupOrder, putTaskGroup } from './api'
+import { putGroupOrder, putTask } from './api'
 
 export const handleDragEnd = async (event, dispatch, noteId, setActiveTask) => {
 	const { active, over } = event
@@ -15,7 +15,7 @@ export const handleDragEnd = async (event, dispatch, noteId, setActiveTask) => {
 			const newGroupId = over.id
 
 			if (active.data.current?.task.groupId !== newGroupId) {
-				await putTaskGroup(taskId, newGroupId)
+				await putTask(taskId, newGroupId, undefined)
 				dispatch(
 					updateTaskGroup({
 						newGroupId,

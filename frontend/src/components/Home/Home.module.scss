@@ -1,0 +1,20 @@
+.home-page {
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	gap: 30px;
+	&__columns {
+		display: flex;
+		justify-content: space-around;
+		color: var(--accent-color);
+	}
+	&__column {
+		border: 1px white solid;
+		padding: 10px 30px;
+		text-align: center;
+		border-radius: 22px;
+		p {
+			font-size: var(--medium-text-size);
+		}
+	}
+}

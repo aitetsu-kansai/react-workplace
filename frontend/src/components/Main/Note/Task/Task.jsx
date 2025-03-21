@@ -2,9 +2,10 @@ import { useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
 import { RxCross1 } from 'react-icons/rx'
 import { useDispatch } from 'react-redux'
+import { putTask, removeTask } from '../../../../../utils/api'
+import { setInfo } from '../../../../redux/slices/infoSlice'
 import { deleteTask, toggleTask } from '../../../../redux/slices/notesSlice'
 import style from './Task.module.scss'
-import { setInfo } from '../../../../redux/slices/infoSlice'
 
 function Task({ task, isOverlay = false }) {
 	const { attributes, listeners, setNodeRef, transform } = useDraggable({
@@ -14,28 +15,25 @@ function Task({ task, isOverlay = false }) {
 
 	const dispatch = useDispatch()
 
-	const handleToggleTask = (e, taskId) => {
+	const handleToggleTask = async (e, taskId) => {
 		e.stopPropagation()
-		requestAnimationFrame(() => {
-			dispatch(toggleTask(taskId))
-		})
+
+		try {
+			await putTask(taskId, undefined, !task.status)
+
+			requestAnimationFrame(() => {
+				dispatch(toggleTask(taskId))
+			})
+		} catch (err) {
+			dispatch(setInfo({ infoMessage: 'Failed to update task' }))
+		}
 	}
 
 	const handleDeleteTask = async (e, taskId) => {
 		e.stopPropagation()
 
 		try {
-			const response = await fetch(
-				`http://localhost:5000/tasks/${taskId}`,
-				{
-					method: 'DELETE',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-				}
-			)
-
-			if (!response.ok) throw new Error('Failed to delete task')
+			await removeTask(taskId)
 			dispatch(deleteTask(taskId))
 		} catch (error) {
 			console.error(error)

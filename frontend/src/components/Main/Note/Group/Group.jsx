@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import style from './Group.module.scss'
 
 import { RxCross1 } from 'react-icons/rx'
+import { createTask, removeGroup } from '../../../../../utils/api'
 import { generateId } from '../../../../../utils/generateRandomId'
 import { setInfo } from '../../../../redux/slices/infoSlice'
 import {
@@ -17,7 +18,6 @@ import {
 } from '../../../../redux/slices/notesSlice'
 import Input from '../../../UI-Components/Input/Input'
 import Task from '../Task/Task'
-import { createTask } from '../../../../../utils/api'
 function Group({ groupName, noteId, groupId }) {
 	const tasksByGroupId = useSelector(state =>
 		selectTasksByGroupId(state, groupId)
@@ -41,14 +41,7 @@ function Group({ groupName, noteId, groupId }) {
 
 	const handleDeleteGroup = async groupId => {
 		try {
-			const response = await fetch(`http://localhost:5000/groups/${groupId}`, {
-				method: 'DELETE',
-				headers: { 'Content-Type': 'application/json' },
-			})
-			if (!response.ok) {
-				throw new Error('Failed to delete group')
-			}
-			console.log(groupId)
+			await removeGroup(groupId)
 			dispatch(deleteGroup(groupId))
 		} catch (error) {
 			dispatch(
@@ -91,7 +84,6 @@ function Group({ groupName, noteId, groupId }) {
 				taskName,
 				order: tasksByGroupId.length,
 			})
-			console.log(newTask)
 			dispatch(addTask(newTask))
 			setTaskName('')
 		} catch (error) {

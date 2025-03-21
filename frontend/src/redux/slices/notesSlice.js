@@ -15,7 +15,7 @@ const notesSlice = createSlice({
 		addNote: (state, action) => {
 			state.notes.push(action.payload)
 		},
-		removeNote: (state, action) => {
+		deleteNote: (state, action) => {
 			const noteToRemoveId = action.payload
 			state.notes = state.notes.filter(note => note.id !== noteToRemoveId)
 			state.groups = state.groups.filter(
@@ -32,9 +32,6 @@ const notesSlice = createSlice({
 			}
 		},
 		updateGroupOrder: (state, action) => {
-			//2 (попробовать найти группу, у которой меняется номер, взять оттуда старый номер и поменять местами с группой, с которой мы меняем местами номер)
-
-			//1
 			const { oldIndex, newIndex, noteId } = action.payload
 
 			const filteredGroups = state.groups.filter(
@@ -108,17 +105,22 @@ export const {
 	addGroup,
 	addNote,
 	addTask,
-	removeNote,
+	deleteNote,
 	toggleTask,
 	deleteTask,
 	updateTaskGroup,
 	updateGroupOrder,
 	deleteGroup,
 } = notesSlice.actions
+
 export const selectNotes = state => state.notes.notes
 export const selectGroups = state => state.notes.groups
-export const selectNoteById = (state, id) =>
-	state.notes.notes.find(note => note.id === id)
+
+export const selectNoteById = createSelector(
+	[state => state.notes.notes, (state, id) => id],
+	(notes, noteId) => notes.find(note => note.id === noteId)
+)
+
 export const selectGroupsById = createSelector(
 	[state => state.notes.groups, (state, id) => id],
 	(groups, noteId) => groups.filter(group => group.noteId === noteId)

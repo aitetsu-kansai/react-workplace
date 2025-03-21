@@ -53,14 +53,18 @@ export const deleteTask = async (req, res) => {
 export const updateTask = async (req, res) => {
 	try {
 		const { taskId } = req.params
-		const { groupId } = req.body
+		const { groupId, status } = req.body
 		console.log(groupId)
+		const updateFields = {}
+		if (groupId !== undefined) updateFields.groupId = groupId
+		if (status !== undefined) updateFields.status = status
 
-		const updatedTask = await Task.findOneAndUpdate(
-			{ taskId },
-			{ groupId },
-			{ new: true }
-		)
+		if (Object.keys(updateFields).length === 0) {
+			return res.status(400).json({ error: 'No fields to update' })
+		}
+		const updatedTask = await Task.findOneAndUpdate({ taskId }, updateFields, {
+			new: true,
+		})
 
 		if (!updatedTask) {
 			return res.status(404).json({ error: 'The task is not found' })

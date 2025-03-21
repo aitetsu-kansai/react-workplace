@@ -4,9 +4,10 @@ import NotesFolder from './NotesFolder/NotesFolder'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { removeNote, fetchNotes } from '../../../../utils/api'
 import { selectSidebarTabFilter } from '../../../redux/slices/filterSlice'
 import { setInfo } from '../../../redux/slices/infoSlice'
-import { addNote, removeNote } from '../../../redux/slices/notesSlice'
+import { addNote, deleteNote } from '../../../redux/slices/notesSlice'
 import {
 	selectSidebebarVisibleState,
 	selectTabs,
@@ -22,7 +23,6 @@ function Sidebar() {
 	const navigate = useNavigate()
 	const tabs = useSelector(selectTabs)
 
-	// const [notes, setNotes] = useState([])
 	const sidebarVisibleState = useSelector(selectSidebebarVisibleState)
 	const sidebarTabFilter = useSelector(selectSidebarTabFilter)
 
@@ -32,21 +32,15 @@ function Sidebar() {
 	})
 
 	useEffect(() => {
-		const fetchNotes = async () => {
+		const loadData = async () => {
 			try {
-				const response = await fetch('http://localhost:5000/notes')
-				if (response.ok) {
-					const result = await response.json()
-					// console.log(result)
-
-					result.forEach(el => {
-						// console.log(el.id)
-						const noteExists = tabs.some(note => note.id === el.id)
-						if (!noteExists) {
-							dispatch(addNote({ id: el.id, name: el.name }))
-						}
-					})
-				}
+				const notes = await fetchNotes()
+				notes.forEach(el => {
+					const noteExists = tabs.some(note => note.id === el.id)
+					if (!noteExists) {
+						dispatch(addNote({ id: el.id, name: el.name }))
+					}
+				})
 			} catch (error) {
 				dispatch(
 					setInfo({
@@ -56,7 +50,8 @@ function Sidebar() {
 				)
 			}
 		}
-		fetchNotes()
+		loadData()
+
 		handleNavigate('/notes')
 	}, [])
 
@@ -66,19 +61,10 @@ function Sidebar() {
 
 	const handleDeleteNote = async (e, id) => {
 		e.stopPropagation()
-		console.log(id)
 
 		try {
-			const response = await fetch(`http://localhost:5000/notes/${id}`, {
-				method: 'DELETE',
-				headers: { 'Content-Type': 'application/json' },
-			})
-			if (!response.ok) {
-				throw new Error('Failed to delete note')
-			}
-
-			// setNotes(notes.filter(el => el.id !== id))
-			dispatch(removeNote(id))
+			await removeNote(id)
+			dispatch(deleteNote(id))
 		} catch (error) {
 			console.error(error)
 			dispatch(

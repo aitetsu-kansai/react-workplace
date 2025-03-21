@@ -17,9 +17,10 @@ import Dropdown from '../../UI-Components/Drowdown/Dropdown'
 import InputLabel from '../../UI-Components/Label/InputLabel.jsx'
 import Modal from '../../UI-Components/Modal/Modal.jsx'
 
+import { createNote } from '../../../../utils/api.js'
+import { generateId } from '../../../../utils/generateRandomId.js'
 import style from './HeaderTools.module.scss'
 import ThemeSwitcher from './ThemeSwitcher/ThemeSwitcher.jsx'
-import { generateId } from '../../../../utils/generateRandomId.js'
 
 function Tools() {
 	const location = useLocation()
@@ -45,17 +46,8 @@ function Tools() {
 		}
 
 		try {
-			const response = await fetch('http://localhost:5000/notes', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ name: trimmedName, id: generateId() }),
-			})
+			const newNote = await createNote({ name: trimmedName, id: generateId() })
 
-			if (!response.ok) {
-				throw new Error('Failed to create note')
-			}
-
-			const newNote = await response.json()
 			console.log(newNote)
 			dispatch(addNote(newNote))
 		} catch (error) {

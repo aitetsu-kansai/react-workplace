@@ -1,7 +1,4 @@
-@use '../../../variables.scss' as vars;
-
 .tab-container {
-	border: 2px, var(--accent-color) solid;
 	display: flex;
 	// justify-content: space-between;
 	align-items: center;
@@ -11,6 +8,8 @@
 	font-size: var(--standart-text-size);
 	color: var(--accent-color);
 	transition: 0.3s all ease-out;
+	border: 2px var(--accent-color) solid;
+	// border-color: var(--accent-color);
 
 	p {
 		overflow: hidden;

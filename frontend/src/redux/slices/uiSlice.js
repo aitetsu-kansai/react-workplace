@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { addNote, removeNote } from './notesSlice'
+import { addNote, deleteNote } from './notesSlice'
 
 const initialState = {
 	isSidebarVisible: true,
@@ -60,7 +60,7 @@ const uiSlice = createSlice({
 		},
 	},
 	extraReducers: builder => {
-		builder.addCase(removeNote, (state, action) => {
+		builder.addCase(deleteNote, (state, action) => {
 			return {
 				...state,
 				tabs: state.tabs.filter(tab => tab.id !== action.payload),
